@@ -41,8 +41,8 @@ parser.add_argument("--output_dir", type=str, default="/home/fufa/projects2026/D
 # 生成occupancy所需参数
 parser.add_argument("--occupancy_resolution", type=float, default=0.1, help='occupancy分辨率')
 # 生成路径所需参数
-parser.add_argument('--num_points', type=int, default=10, help='每条路径的路径点数量')
-parser.add_argument('--num_paths', type=int, default=10, help='要生成的路径数量')
+parser.add_argument('--num_points', type=int, default=4, help='每条路径的路径点数量')
+parser.add_argument('--num_paths', type=int, default=1, help='要生成的路径数量')
 parser.add_argument('--max_angle_deviation', type=float, default=10.0, help='最大角度偏差度,限制前进方向在前方左N度和右N度之间')
 # 匹配参数
 parser.add_argument("--occlusion_threshold", type=float, default=0.001, help="遮挡检测阈值(米), 空间两点欧式距离")
@@ -190,7 +190,7 @@ if __name__ == "__main__":
                 camera_rig.set_camera_rig_pose(x, y, z, roll, pitch, yaw)
 
                 # 等待渲染
-                for i in range(30):
+                for i in range(10):
                     world.step(render=True)
                     rep.orchestrator.step()
                     simulation_app.update()

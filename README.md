@@ -108,7 +108,24 @@ ln -s $HOME/isaac_sim/asset_extern asset_extern # 链接生成的场景资产
 ./app/isaac-sim.sh \
 --/persistent/isaac/asset_root/default=/home/fufa/isaac_sim/5.1_asset/Assets/Isaac/5.1
 
+# 生成数据
+./app/python.sh gen_data.py \
+--seed 0 \
+--scene_usd_url /home/fufa/d-isaacsim/asset_extern/interior_template_20251211/interior_template.usdc \
+--camera_usd_url /home/fufa/d-isaacsim/asset_usd/ZED_X.usdc \
+--output_dir /home/fufa/projects2026/DataGen_3dfm/workdir/3dfm/home000 \
+--num_points 4 \
+--num_paths 1 
+
+# 可视化数据
+./app/python.sh show_data.py \
+--data_dir /home/fufa/projects2026/DataGen_3dfm/workdir/3dfm/home000 \
+--save_dir /home/fufa/projects2026/DataGen_3dfm/workdir/3dfm/home000/vis
 ```
 ## 相机说明
 - `assets/ZED_X.usdc`: isaacsim官方的相机
 - `assets/zedx01.usd`: 在`assets/ZED_X.usdc`修改，让左右相机向分别向中心旋转8度
+## 生成数据记录
+```
+
+```
