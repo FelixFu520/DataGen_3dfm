@@ -109,3 +109,5 @@ ln -s $HOME/isaac_sim/asset_extern asset_extern # 链接生成的场景资产
 --/persistent/isaac/asset_root/default=/home/fufa/isaac_sim/5.1_asset/Assets/Isaac/5.1
 
 ```
+## 相机说明
+- `assets/ZED_X.usdc`: isaacsim官方的相机
