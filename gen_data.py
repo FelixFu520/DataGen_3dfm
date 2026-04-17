@@ -36,7 +36,7 @@ parser = argparse.ArgumentParser()
 # 环境参数
 parser.add_argument("--seed", type=int, default=42)
 parser.add_argument("--scene_usd_url", type=str, default="/home/fufa/d-isaacsim/asset_extern/interior_template_20251211/interior_template.usdc", help='场景USD文件路径')
-parser.add_argument("--camera_usd_url", type=str, default="/home/fufa/projects2026/DataGen_3dfm/assets/zedx.usd", help='相机USD文件路径')
+parser.add_argument("--camera_usd_url", type=str, default="/home/fufa/projects2026/DataGen_3dfm/assets/ZED_X.usdc", help='相机USD文件路径')
 parser.add_argument("--output_dir", type=str, default="/home/fufa/projects2026/DataGen_3dfm/workdir/3dfm/debug", help='输出目录')
 # 生成occupancy所需参数
 parser.add_argument("--occupancy_resolution", type=float, default=0.1, help='occupancy分辨率')

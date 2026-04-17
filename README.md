@@ -111,3 +111,4 @@ ln -s $HOME/isaac_sim/asset_extern asset_extern # 链接生成的场景资产
 ```
 ## 相机说明
 - `assets/ZED_X.usdc`: isaacsim官方的相机
+- `assets/zedx01.usd`: 在`assets/ZED_X.usdc`修改，让左右相机向分别向中心旋转8度
