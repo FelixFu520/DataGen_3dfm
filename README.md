@@ -102,8 +102,10 @@ ln -s $HOME/isaac_sim/5.1 app   # 链接isaacsim5.1
 ln -s $HOME/isaac_sim/5.1_asset asset_internal  # 链接isaacsim5.1资产
 ln -s $HOME/isaac_sim/asset_extern asset_extern # 链接生成的场景资产
 ```
-
 ## 生成&可视化数据
 ```
+# 启动Isaacsim
+./app/isaac-sim.sh \
+--/persistent/isaac/asset_root/default=/home/fufa/isaac_sim/5.1_asset/Assets/Isaac/5.1
 
 ```

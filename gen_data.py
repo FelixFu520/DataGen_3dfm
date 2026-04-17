@@ -25,25 +25,25 @@ import omni.replicator.core as rep
 from isaacsim.asset.gen.omap.bindings import _omap  # 此文件不用, 但是别的文件要用, 这个要个 启动扩展 配合, 所以必须导入
 
 # 自定义工具
-from disaacsim.utils.misc import load_usd_file
-from disaacsim.utils.occupancy import get_mesh_paths, get_semantic_occupancy, save_semantic_occupancy_ply
-from disaacsim.utils.random_path import gen_path
-from disaacsim.utils.camera import CameraRig
-from disaacsim.utils.misc_no_isaacsim import get_pair_combinations
+from util.misc import load_usd_file
+from util.occupancy import get_mesh_paths, get_semantic_occupancy, save_semantic_occupancy_ply
+from util.random_path import gen_path
+from util.camera import CameraRig
+from util.misc_no_isaacsim import get_pair_combinations
 
 # 解析命令行参数
 parser = argparse.ArgumentParser()
 # 环境参数
 parser.add_argument("--seed", type=int, default=42)
 parser.add_argument("--scene_usd_url", type=str, default="/home/fufa/d-isaacsim/asset_extern/interior_template_20251211/interior_template.usdc", help='场景USD文件路径')
-parser.add_argument("--camera_usd_url", type=str, default="/home/fufa/d-isaacsim/asset_usd/3dfm-camera-zedx.usdc", help='相机USD文件路径')
-parser.add_argument("--output_dir", type=str, default="/home/fufa/d-isaacsim/_out_3dfm/scenes/interior_3dfm-camera-zedx", help='输出目录')
+parser.add_argument("--camera_usd_url", type=str, default="/home/fufa/projects2026/DataGen_3dfm/assets/zedx.usd", help='相机USD文件路径')
+parser.add_argument("--output_dir", type=str, default="/home/fufa/projects2026/DataGen_3dfm/workdir/3dfm/debug", help='输出目录')
 # 生成occupancy所需参数
 parser.add_argument("--occupancy_resolution", type=float, default=0.1, help='occupancy分辨率')
 # 生成路径所需参数
 parser.add_argument('--num_points', type=int, default=10, help='每条路径的路径点数量')
 parser.add_argument('--num_paths', type=int, default=10, help='要生成的路径数量')
-parser.add_argument('--max_angle_deviation', type=float, default=20.0, help='最大角度偏差度,限制前进方向在前方左N度和右N度之间')
+parser.add_argument('--max_angle_deviation', type=float, default=10.0, help='最大角度偏差度,限制前进方向在前方左N度和右N度之间')
 # 匹配参数
 parser.add_argument("--occlusion_threshold", type=float, default=0.001, help="遮挡检测阈值(米), 空间两点欧式距离")
 args = parser.parse_args()
