@@ -40,18 +40,18 @@ CAMERA_CONFIGS = {
         "left_camera_path": "base_link/ZED_X/CameraLeft",
         "right_camera_path": "base_link/ZED_X/CameraRight",
     },
-    "3dfm-camera-zedx.usd": {
+    "zedx01.usd": {
         "resolution": (1936, 1216),
         "left_camera_path": "base_link/camera/CameraLeft",
         "right_camera_path": "base_link/camera/CameraRight",
     },
-    "3dfm-camera-zedx2.usd": {
+    "zedx02.usd": {
         "resolution": (1280, 800),
         "left_camera_path": "base_link/camera/CameraLeft",
         "right_camera_path": "base_link/camera/CameraRight",
     },
-    "3dfm-camera-zedx3.usd": {
-        "resolution": (1280, 800),
+    "zedx03.usd": {
+        "resolution": (1936, 1216),
         "left_bottom_camera_path": "base_link/camera/CameraLeftBottom",
         "right_bottom_camera_path": "base_link/camera/CameraRightBottom",
         "left_top_camera_path": "base_link/camera/CameraLeftTop",
@@ -223,7 +223,7 @@ class CameraRig:
             # 启用相机渲染
             left_camera.enable_all() # 启用左相机渲染
             right_camera.enable_all() # 启用右相机渲染
-        elif self.camera_rig_name == "3dfm-camera-zedx.usd":
+        elif self.camera_rig_name == "zedx01.usd":
            # 添加相机USD
             camera_usd_path = self.camera_rig_prim_path + "/camera"
             add_reference_to_stage(usd_path=self.camera_usd_url, prim_path=camera_usd_path)
@@ -260,7 +260,7 @@ class CameraRig:
             # 启用相机渲染
             left_camera.enable_all() # 启用左相机渲染
             right_camera.enable_all() # 启用右相机渲染
-        elif self.camera_rig_name == "3dfm-camera-zedx2.usd":
+        elif self.camera_rig_name == "zedx02.usd":
            # 添加相机USD
             camera_usd_path = self.camera_rig_prim_path + "/camera"
             add_reference_to_stage(usd_path=self.camera_usd_url, prim_path=camera_usd_path)
@@ -297,9 +297,7 @@ class CameraRig:
             # 启用相机渲染
             left_camera.enable_all() # 启用左相机渲染
             right_camera.enable_all() # 启用右相机渲染
-        
-        # 20260327添加一个4目相机
-        elif self.camera_rig_name == "3dfm-camera-zedx3.usd":
+        elif self.camera_rig_name == "zedx03.usd":
            # 添加相机USD
             camera_usd_path = self.camera_rig_prim_path + "/camera"
             add_reference_to_stage(usd_path=self.camera_usd_url, prim_path=camera_usd_path)
