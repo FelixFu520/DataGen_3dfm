@@ -6,6 +6,136 @@ from loguru import logger
 from typing import Tuple, Optional
 
 
+def filter_outdoor_positions(
+    positions_xy: np.ndarray,
+    occupied_xy: np.ndarray,
+    resolution: float = 0.1,
+    wall_dilate_iterations: int = 2,
+) -> np.ndarray:
+    """
+    通过 flood fill 过滤屋外的 free positions。
+    
+    原理：将 free 和 occupied 点栅格化为 2D 图像，用 occupied 点构建墙壁，
+    从图像边缘做 flood fill 标记所有与边缘相连的 free 区域（即屋外），
+    只保留被墙壁封闭的室内 free 点。
+
+    参数:
+        positions_xy: free positions 数组，形状为 (n, 2)，包含 [x, y] 坐标
+        occupied_xy: occupied positions 数组，形状为 (m, 2)，包含 [x, y] 坐标（墙壁/物体）
+        resolution: 栅格化分辨率（与 occupancy 分辨率一致）
+        wall_dilate_iterations: 对墙壁做膨胀的迭代次数，用于填补墙壁间隙，默认2
+    
+    返回:
+        filtered_xy: 过滤后仅包含室内点的数组，形状为 (k, 2)
+    """
+    if len(positions_xy) == 0 or len(occupied_xy) == 0:
+        return positions_xy
+
+    all_xy = np.vstack([positions_xy, occupied_xy])
+    xy_min = all_xy.min(axis=0)
+    xy_max = all_xy.max(axis=0)
+
+    padding = 2
+    grid_w = int(np.round((xy_max[0] - xy_min[0]) / resolution)) + 1 + 2 * padding
+    grid_h = int(np.round((xy_max[1] - xy_min[1]) / resolution)) + 1 + 2 * padding
+
+    def to_grid(xy):
+        col = np.round((xy[:, 0] - xy_min[0]) / resolution).astype(int) + padding
+        row = np.round((xy[:, 1] - xy_min[1]) / resolution).astype(int) + padding
+        return row, col
+
+    free_row, free_col = to_grid(positions_xy)
+    occ_row, occ_col = to_grid(occupied_xy)
+
+    # 构建墙壁层：occupied=255（前景）
+    wall_grid = np.zeros((grid_h, grid_w), dtype=np.uint8)
+    occ_row_clipped = np.clip(occ_row, 0, grid_h - 1)
+    occ_col_clipped = np.clip(occ_col, 0, grid_w - 1)
+    wall_grid[occ_row_clipped, occ_col_clipped] = 255
+
+    # 膨胀墙壁以填补间隙（门窗等小缝隙会被封住）
+    if wall_dilate_iterations > 0:
+        kernel = cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (3, 3))
+        wall_grid = cv2.dilate(wall_grid, kernel, iterations=wall_dilate_iterations)
+
+    # 构建 flood fill 用的图：墙壁区域不可通过（值=1），其余为 0
+    flood_img = np.zeros((grid_h, grid_w), dtype=np.uint8)
+    flood_img[wall_grid > 0] = 1  # 墙壁不可通过
+
+    # 从图像四个边缘的所有空闲点做 flood fill，标记为"屋外"
+    # floodFill 需要一个比原图大 2 的 mask
+    mask = np.zeros((grid_h + 2, grid_w + 2), dtype=np.uint8)
+    outdoor_val = 128
+
+    # 从四条边做 flood fill
+    for r in range(grid_h):
+        for c in [0, grid_w - 1]:
+            if flood_img[r, c] == 0 and mask[r + 1, c + 1] == 0:
+                cv2.floodFill(flood_img, mask, (c, r), outdoor_val)
+    for c in range(grid_w):
+        for r in [0, grid_h - 1]:
+            if flood_img[r, c] == 0 and mask[r + 1, c + 1] == 0:
+                cv2.floodFill(flood_img, mask, (c, r), outdoor_val)
+
+    # 判断每个 free point 是否在"屋外"区域
+    free_row_clipped = np.clip(free_row, 0, grid_h - 1)
+    free_col_clipped = np.clip(free_col, 0, grid_w - 1)
+    is_indoor = flood_img[free_row_clipped, free_col_clipped] != outdoor_val
+
+    filtered_xy = positions_xy[is_indoor]
+    logger.info(
+        f"室内过滤: {len(positions_xy)} -> {len(filtered_xy)} 点 "
+        f"(移除 {len(positions_xy) - len(filtered_xy)} 个屋外点, "
+        f"wall_dilate={wall_dilate_iterations})"
+    )
+
+    return filtered_xy
+
+
+def erode_free_positions(positions_xy: np.ndarray, resolution: float = 0.1, erode_iterations: int = 3) -> np.ndarray:
+    """
+    通过形态学腐蚀操作过滤掉 free positions 边缘的点，只保留中心区域的点。
+    
+    将 XY 坐标栅格化为二值图像，执行腐蚀操作，然后只保留腐蚀后仍然存在的点。
+    
+    参数:
+        positions_xy: free positions 数组，形状为 (n, 2)，包含 [x, y] 坐标
+        resolution: 栅格化分辨率（与 occupancy 分辨率一致）
+        erode_iterations: 腐蚀迭代次数，越大则过滤掉的边缘越宽
+    
+    返回:
+        filtered_xy: 过滤后的点数组，形状为 (m, 2)
+    """
+    if erode_iterations <= 0:
+        return positions_xy
+    
+    x_min, y_min = positions_xy.min(axis=0)
+    x_max, y_max = positions_xy.max(axis=0)
+    
+    # 将世界坐标转为栅格索引
+    col_indices = np.round((positions_xy[:, 0] - x_min) / resolution).astype(int)
+    row_indices = np.round((positions_xy[:, 1] - y_min) / resolution).astype(int)
+    
+    grid_w = col_indices.max() + 1
+    grid_h = row_indices.max() + 1
+    
+    # 构建二值图像：free=255, 其他=0
+    grid = np.zeros((grid_h, grid_w), dtype=np.uint8)
+    grid[row_indices, col_indices] = 255
+    
+    # 形态学腐蚀：用 3x3 椭圆核迭代腐蚀，确保各方向均匀收缩
+    kernel = cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (3, 3))
+    eroded = cv2.erode(grid, kernel, iterations=erode_iterations)
+    
+    # 查找每个原始点在腐蚀后是否仍然存在
+    keep_mask = eroded[row_indices, col_indices] > 0
+    
+    filtered_xy = positions_xy[keep_mask]
+    logger.info(f"腐蚀过滤: {len(positions_xy)} -> {len(filtered_xy)} 点 (移除 {len(positions_xy) - len(filtered_xy)} 个边缘点, iterations={erode_iterations})")
+    
+    return filtered_xy
+
+
 def get_z_values_set(free_position: np.ndarray) -> np.ndarray:
     """
     获取所有唯一的z值集合
@@ -310,14 +440,18 @@ def generate_random_path_from_positions(
         
         # 如果最近的点太远(超过步长的3倍）,则随机选择一个附近的点
         if distances[nearest_idx] > step_size * 3:
-            # 选择距离当前点在一定范围内的点
+            # 优先从有效点中选择
             nearby_mask = distances < step_size * 3
+            if avoid_boundary:
+                nearby_mask = nearby_mask & valid_point_mask
             if np.any(nearby_mask):
                 nearby_indices = np.where(nearby_mask)[0]
                 nearest_idx = random.choice(nearby_indices)
                 nearest_point = positions_xy[nearest_idx]
+            elif len(valid_indices) > 0:
+                nearest_idx = valid_indices[random.randint(0, len(valid_indices) - 1)]
+                nearest_point = positions_xy[nearest_idx]
             else:
-                # 如果没有附近的点,随机选择一个
                 nearest_idx = random.randint(0, len(positions_xy) - 1)
                 nearest_point = positions_xy[nearest_idx]
         
@@ -491,7 +625,7 @@ def visualize_path(path_xy: np.ndarray, positions_xy: np.ndarray, z_value: float
 
 
 def gen_path(
-    free_position: str,
+    free_position: np.ndarray,
     same_z_height: bool = None,
     z_value: float = None,
     num_paths: int = 10,
@@ -503,6 +637,11 @@ def gen_path(
     visualize: bool = True,
     vis_scale: float = 50.0,
     min_image_size: int = 2000,
+    erode_iterations: int = 5,
+    erode_resolution: float = 0.1,
+    occupied_position: np.ndarray = None,
+    filter_outdoor: bool = True,
+    wall_dilate_iterations: int = 2,
     ):
     """
     从free positions中生成随机路径
@@ -520,6 +659,11 @@ def gen_path(
         visualize: 是否可视化路径(生成图像）
         vis_scale: 可视化图像缩放因子(像素/单位）,默认50.0
         min_image_size: 最小图像尺寸(像素）,确保图像足够大,默认2000
+        erode_iterations: 腐蚀迭代次数,越大则过滤掉的边缘越宽,默认3。设为0则不腐蚀
+        erode_resolution: 腐蚀栅格化分辨率,应与occupancy分辨率一致,默认0.1
+        occupied_position: occupied positions数组,形状为 (m, 4),包含 [x, y, z, semantic_label],用于室内过滤
+        filter_outdoor: 是否过滤屋外点,需要同时提供 occupied_position,默认True
+        wall_dilate_iterations: 墙壁膨胀迭代次数,用于填补门窗等间隙,默认2
     """
     # 1. 获取z值集合
     z_values = get_z_values_set(free_position)  # 形状为 (n,),包含所有唯一的z值,已经排序
@@ -553,16 +697,39 @@ def gen_path(
         # 筛选出该高度上的free positions
         positions_xy = filter_free_positions_at_z(free_position, z_value, z_tolerance)
         
+        # 室内过滤：利用 occupied points（墙壁）做 flood fill，去掉屋外的 free points
+        if filter_outdoor and occupied_position is not None and len(positions_xy) > 0:
+            occupied_at_z = filter_free_positions_at_z(occupied_position, z_value, z_tolerance)
+            if len(occupied_at_z) > 0:
+                positions_xy = filter_outdoor_positions(
+                    positions_xy, occupied_at_z, erode_resolution, wall_dilate_iterations
+                )
+        
+        # 保存原始positions用于可视化（室内过滤后的点作为"原始"）
+        positions_xy_original = positions_xy
+        
+        # 腐蚀过滤：去掉边缘的free positions，只保留中心区域
+        use_erode = False
+        if erode_iterations > 0 and len(positions_xy) > 0:
+            positions_xy_eroded = erode_free_positions(positions_xy, erode_resolution, erode_iterations)
+            if len(positions_xy_eroded) > num_points:
+                positions_xy = positions_xy_eroded
+                use_erode = True
+            else:
+                logger.warning(f"腐蚀后剩余点数 ({len(positions_xy_eroded)}) 不足，使用原始点")
+        
         # 生成路径,形状为 (num_points, 2),包含 [x, y] 坐标
+        # 腐蚀后的点集已经去掉了边缘，不需要再做矩形边界过滤
         path_xy = generate_random_path_from_positions(
-            positions_xy,  # 形状为 (n, 2),包含 [x, y] 坐标
-            num_points,  # 路径点的数量
-            step_size,  # 每步的最大步长
-            max_angle_deviation,  # 最大角度偏差
+            positions_xy,
+            num_points,
+            step_size,
+            max_angle_deviation,
+            avoid_boundary=not use_erode,
         )
         paths_xy.append(path_xy)  # 保存路径
         actual_z_values.append(z_value)  # 保存当前路径的z高度
-        all_positions_xy.append(positions_xy)  # 保存该高度上的所有free positions
+        all_positions_xy.append(positions_xy_original)  # 用原始点做可视化
     
     # 4. 保存路径
     paths_xyz = save_paths_to_npy(paths_xy, actual_z_values, output_path)

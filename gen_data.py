@@ -44,6 +44,11 @@ parser.add_argument("--occupancy_resolution", type=float, default=0.1, help='occ
 parser.add_argument('--num_points', type=int, default=4, help='每条路径的路径点数量')
 parser.add_argument('--num_paths', type=int, default=1, help='要生成的路径数量')
 parser.add_argument('--max_angle_deviation', type=float, default=10.0, help='最大角度偏差度,限制前进方向在前方左N度和右N度之间')
+parser.add_argument('--erode_iterations', type=int, default=2, help='free positions边缘腐蚀迭代次数,越大过滤边缘越宽,设为0则不腐蚀')
+parser.add_argument('--filter_outdoor', action='store_true', default=True, help='是否过滤屋外的free positions(基于flood fill)')
+parser.add_argument('--no_filter_outdoor', action='store_true', help='禁用屋外过滤')
+parser.add_argument('--wall_dilate_iterations', type=int, default=2, help='墙壁膨胀迭代次数,用于填补门窗等间隙,越大则封闭效果越强')
+
 # 匹配参数
 parser.add_argument("--occlusion_threshold", type=float, default=0.001, help="遮挡检测阈值(米), 空间两点欧式距离")
 args = parser.parse_args()
@@ -150,6 +155,11 @@ if __name__ == "__main__":
         visualize=True,
         vis_scale=50.0,
         min_image_size=2000,
+        erode_iterations=args.erode_iterations,
+        erode_resolution=args.occupancy_resolution,
+        occupied_position=occupied_data,
+        filter_outdoor=args.filter_outdoor and not args.no_filter_outdoor,
+        wall_dilate_iterations=args.wall_dilate_iterations,
     )
 
     # ============ 步骤 4: 相机 ============
@@ -204,8 +214,8 @@ if __name__ == "__main__":
                 valid_image_count = 0
                 for camera_rgb in cameras_rgb:
                     # 排除整体偏暗的图片、排除色差小的图片
-                    black_pixel_threshold = 50  # 整体偏暗的阈值
-                    color_difference_threshold = 40  # 色差小的阈值
+                    black_pixel_threshold = 10  # 整体偏暗的阈值
+                    color_difference_threshold = 10  # 色差小的阈值
                     black_pixel_ratio = 0.5  # 整体偏暗的像素比例
                     black_pixel_count = np.sum(camera_rgb < black_pixel_threshold)
                     max_value = np.max(camera_rgb)  # 最大值
