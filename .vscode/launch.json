@@ -1,0 +1,83 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "gen_data",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "gen_data.py",
+            "console": "integratedTerminal",
+            "env": {
+                "RESOURCE_NAME": "IsaacSim"
+            },
+            "python": "${workspaceFolder}/app/kit/python/bin/python3",
+            "envFile": "${workspaceFolder}/.vscode/.standalone_examples.env",
+            "preLaunchTask": "setup_python_env",
+            "args": [
+                "--seed",
+                "42",
+                "--scene_usd_url",
+                "/home/fufa/d-isaacsim/asset_extern/Scene-Home-Issac/home_001/home_001.usdc",
+                "--camera_usd_url",
+                "/home/fufa/d-isaacsim/asset_usd/3dfm-camera-zedx.usd",
+                "--output_dir",
+                "/home/fufa/isaac_sim/workdir/3dfm/2026/home_001/3dfm-camera-zedx-20260407",
+                "--occupancy_resolution",
+                "0.1",
+                "--num_points",
+                "10",
+                "--num_paths",
+                "10",
+                "--max_angle_deviation",
+                "20.0",
+                "--occlusion_threshold",
+                "0.001",
+            ]
+        },
+        {
+            "name": "show_data",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "show_data.py",
+            "console": "integratedTerminal",
+            "env": {
+                "RESOURCE_NAME": "IsaacSim"
+            },
+            "python": "${workspaceFolder}/app/kit/python/bin/python3",
+            "envFile": "${workspaceFolder}/.vscode/.standalone_examples.env",
+            "preLaunchTask": "setup_python_env",
+            "args": [
+                "--data_dir",
+                "/home/fufa/isaac_sim/workdir/3dfm/2026/home_001/3dfm-camera-zedx-20260407",
+                "--save_dir",
+                "/home/fufa/isaac_sim/workdir/3dfm/2026/home_001/3dfm-camera-zedx-20260407/vis",
+                "--quantized"
+            ]
+        },
+        {
+            "name": "Python: Current File",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "${file}",
+            "console": "integratedTerminal",
+            "env": {
+                "RESOURCE_NAME": "IsaacSim"
+            },
+            "python": "${workspaceFolder}/app/kit/python/bin/python3",
+            "envFile": "${workspaceFolder}/.vscode/.standalone_examples.env",
+            "preLaunchTask": "setup_python_env"
+        },
+        {
+            "name": "Python: Attach (windows-x86_64/linux-x86_64)",
+            "type": "debugpy",
+            "request": "attach",
+            "connect": {
+                "host": "localhost",
+                "port": 3000
+            }
+        }
+    ]
+}

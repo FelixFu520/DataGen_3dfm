@@ -1,3 +1,10 @@
+.DataGen_omni
+.d-isaacsim
+
+app
+asset_internal
+asset_extern
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[codz]
