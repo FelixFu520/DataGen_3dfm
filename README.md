@@ -110,17 +110,16 @@ ln -s $HOME/isaac_sim/asset_extern asset_extern # 链接生成的场景资产
 
 # 生成数据
 ./app/python.sh gen_data.py \
---seed 0 \
 --scene_usd_url /home/fufa/d-isaacsim/asset_extern/interior_template_20251211/interior_template.usdc \
---camera_usd_url /home/fufa/d-isaacsim/asset_usd/ZED_X.usdc \
---output_dir /home/fufa/projects2026/DataGen_3dfm/workdir/3dfm/home000 \
+--camera_usd_url /home/fufa/projects2026/DataGen_3dfm/assets/zedx01.usd \
+--output_dir /home/fufa/projects2026/DataGen_3dfm/workdir/3dfm/home000_zedx01 \
 --num_points 4 \
 --num_paths 1 
 
 # 可视化数据
 ./app/python.sh show_data.py \
---data_dir /home/fufa/projects2026/DataGen_3dfm/workdir/3dfm/home000 \
---save_dir /home/fufa/projects2026/DataGen_3dfm/workdir/3dfm/home000/vis
+--data_dir /home/fufa/projects2026/DataGen_3dfm/workdir/3dfm/home000_zedx01 \
+--save_dir /home/fufa/projects2026/DataGen_3dfm/workdir/3dfm/home000_zedx01/vis
 ```
 ## 相机说明
 - `assets/ZED_X.usdc`: isaacsim官方的相机
