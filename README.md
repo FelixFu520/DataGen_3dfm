@@ -101,6 +101,9 @@ cd $HOME/DataGen_3dfm
 ln -s $HOME/isaac_sim/5.1 app   # 链接isaacsim5.1
 ln -s $HOME/isaac_sim/5.1_asset asset_internal  # 链接isaacsim5.1资产
 ln -s $HOME/isaac_sim/asset_extern asset_extern # 链接生成的场景资产
+
+# 安装一些库
+./app/python.sh -m pip install loguru  cupy-cuda11x
 ```
 ## 生成&可视化数据
 ```
@@ -126,7 +129,11 @@ ln -s $HOME/isaac_sim/asset_extern asset_extern # 链接生成的场景资产
 - `assets/zedx01.usd`: 在`assets/ZED_X.usdc`修改，让左右相机向分别向中心旋转8度
 - `assets/zedx02.usd`: 在`assets/ZED_X.usdc`修改，让左右相机向分别向非中心旋转8度, 同时修改分辨率
 - `assets/zedx03.usd`: 在`assets/ZED_X.usdc`修改，扩展成4个相机
-## 生成数据记录
+## 火山上跑
+### 封装镜像
 ```
+docker pull nvcr.io/nvidia/cuda:12.8.1-cudnn-devel-ubuntu22.04
 
+# 在docker的CUDA官方镜像中，这些内容要重新安装
+apt-get update && apt-get install -y libgl1 libxt6 libxml2 libxrandr2 libxinerama1 libxcursor1 libxi6 libvulkan1 zenity  libglu1-mesa
 ```
