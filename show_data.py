@@ -31,6 +31,7 @@ parser = argparse.ArgumentParser()
 parser.add_argument("--data_dir", type=str, default="/home/fufa/d-isaacsim/_out_3dfm/scenes/interior_3dfm-camera-zedx")
 parser.add_argument("--save_dir", type=str, default="./_out_3dfm/scenes/show")
 parser.add_argument("--quantized", action="store_true", default=False, help="是否使用量化数据")
+parser.add_argument("--show_num", type=int, default=10, help="要可视化的图片数量")
 args = parser.parse_args()
 
 def save_ply(filename, points, colors):
@@ -226,7 +227,7 @@ if __name__ == "__main__":
     images_name.sort()
 
     # 可视化所有图片, 并把图片投成点云可视化
-    for image_idx, image_name in enumerate(images_name):  # 遍历所有图片
+    for image_idx, image_name in enumerate(images_name[:args.show_num]):  # 遍历所有图片
         logger.info(f"====> 可视化图片 {image_idx + 1}/{len(images_name)}: {image_name} <====")
 
         # 读取内外参
