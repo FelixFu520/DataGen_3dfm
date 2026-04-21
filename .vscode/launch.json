@@ -17,6 +17,15 @@
             "envFile": "${workspaceFolder}/.vscode/.standalone_examples.env",
             "preLaunchTask": "setup_python_env",
             "args": [
+                "--scene_usd_url", "/home/fufa/isaac_sim/extern_asset/TaoBao/UtopianCity/UtopianCityDemoMap.usd",
+                "--camera_usd_url", "/home/fufa/projects2026/DataGen_3dfm/assets/ZED_X.usdc",
+                "--output_dir", "/home/fufa/projects2026/DataGen_3dfm/workdir/3dfm/UtopianCityDemoMap",
+                "--occupancy_resolution", "0.5",
+                "--num_points", "10",
+                "--num_paths", "1",
+                "--max_angle_deviation", "10.0",
+                "--erode_iterations", "10",
+                "--wall_dilate_iterations", "10",
             ]
         },
         {
@@ -33,9 +42,9 @@
             "preLaunchTask": "setup_python_env",
             "args": [
                 "--data_dir",
-                "/home/fufa/isaac_sim/workdir/3dfm/2026/home_001/3dfm-camera-zedx-20260407",
+                "/home/fufa/projects2026/DataGen_3dfm/workdir/3dfm/debug",
                 "--save_dir",
-                "/home/fufa/isaac_sim/workdir/3dfm/2026/home_001/3dfm-camera-zedx-20260407/vis",
+                "/home/fufa/projects2026/DataGen_3dfm/workdir/3dfm/debug/vis",
                 "--quantized"
             ]
         },
