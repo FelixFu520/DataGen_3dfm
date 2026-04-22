@@ -2,40 +2,52 @@
 # echo $VOLC_SK
 # echo $VOLC_PASSWD
 
-# ============================== AIUE_V01_002
+# ============================== AIUE_V01_002, 场景较大, 可以多跑些数据
 # 已执行
 # ./app/python.sh submit_volcengine.py --ak "${VOLC_AK}" --sk "${VOLC_SK}" --private_image_password "${VOLC_PASSWD}"  \
 # --task_name taobao_AIUE_V01_002_zedx01_seed42_2000 \
 # --command  /root/vepfs/isaacsim/DataGen_3dfm/scripts/taobao_AIUE_V01_002_zedx01_seed42_2000.sh 
 
 
-# ============================== AIUE_V01_004
+# ============================== AIUE_V01_004, 场景较大, 可以多跑些数据
 # 已执行
 # ./app/python.sh submit_volcengine.py --ak "${VOLC_AK}" --sk "${VOLC_SK}" --private_image_password "${VOLC_PASSWD}"  \
 # --task_name taobao_AIUE_V01_004_zedx01_seed42_2000 \
 # --command  /root/vepfs/isaacsim/DataGen_3dfm/scripts/taobao_AIUE_V01_004_zedx01_seed42_2000.sh 
 
 
-# ============================== AIUE_V01_005
+# ============================== AIUE_V01_005, 场景较大, 可以多跑些数据
 # 已执行
 # ./app/python.sh submit_volcengine.py --ak "${VOLC_AK}" --sk "${VOLC_SK}" --private_image_password "${VOLC_PASSWD}"  \
 # --task_name taobao_AIUE_V01_005_zedx01_seed42_2000 \
 # --command  /root/vepfs/isaacsim/DataGen_3dfm/scripts/taobao_AIUE_V01_005_zedx01_seed42_2000.sh 
 
-# ============================== AIUE_V03_001
+# ============================== AIUE_V03_001, 场景较大, 可以多跑些数据
 # 已执行
 # ./app/python.sh submit_volcengine.py --ak "${VOLC_AK}" --sk "${VOLC_SK}" --private_image_password "${VOLC_PASSWD}"  \
 # --task_name taobao_AIUE_V03_001_zedx01_seed42_2000 \
 # --command  /root/vepfs/isaacsim/DataGen_3dfm/scripts/taobao_AIUE_V03_001_zedx01_seed42_2000.sh 
 
-# ============================== AIUE_V03_002
+# ============================== AIUE_V03_002, 场景较大, 可以多跑些数据
 # 已执行
 # ./app/python.sh submit_volcengine.py --ak "${VOLC_AK}" --sk "${VOLC_SK}" --private_image_password "${VOLC_PASSWD}"  \
 # --task_name taobao_AIUE_V03_002_zedx01_seed42_2000 \
 # --command  /root/vepfs/isaacsim/DataGen_3dfm/scripts/taobao_AIUE_V03_002_zedx01_seed42_2000.sh 
 
-# ============================== AI_vol33_scene_04
+# ============================== AI_vol33_scene_04, 场景较大, 可以多跑些数据
 # 已执行
 # ./app/python.sh submit_volcengine.py --ak "${VOLC_AK}" --sk "${VOLC_SK}" --private_image_password "${VOLC_PASSWD}"  \
 # --task_name taobao_AI_vol33_scene_04_zedx01_seed42_2000 \
 # --command  /root/vepfs/isaacsim/DataGen_3dfm/scripts/taobao_AI_vol33_scene_04_zedx01_seed42_2000.sh 
+
+# ============================== ModularSwimmingPool, 场景适中
+# 已执行
+# ./app/python.sh submit_volcengine.py --ak "${VOLC_AK}" --sk "${VOLC_SK}" --private_image_password "${VOLC_PASSWD}"  \
+# --task_name taobao_ModularSwimmingPool_zedx01_seed42_2000 \
+# --command  /root/vepfs/isaacsim/DataGen_3dfm/scripts/taobao_ModularSwimmingPool_zedx01_seed42_2000.sh 
+
+# ============================== NewScandinavian, 场景较小
+# 未执行
+./app/python.sh submit_volcengine.py --ak "${VOLC_AK}" --sk "${VOLC_SK}" --private_image_password "${VOLC_PASSWD}"  \
+--task_name taobao_NewScandinavian_zedx01_seed42_2000 \
+--command  /root/vepfs/isaacsim/DataGen_3dfm/scripts/taobao_NewScandinavian_zedx01_seed42_2000.sh 
