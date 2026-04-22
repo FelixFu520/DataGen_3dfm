@@ -23,7 +23,7 @@ def create_ml_job(
     vepfs_mount_path=None, # vePFS挂载到任务的路径
     vepfs_prefix=None, # 将vePFS的哪个路径挂载至任务重
     cpu_number=16, # 指定要使用的CPU核数
-    memory_number=128, # 指定要使用的内存，单位为GB
+    memory_number=64, # 指定要使用的内存，单位为GB
     gpu_type="NVIDIA-L20", # 指定显卡的类型
     gpu_count=1, # 指定要使用的GPU个数
     family="ml.gni3cl", # 指定显卡的家族
@@ -164,7 +164,7 @@ if __name__ == "__main__":
     parser.add_argument("--region", type=str, default="cn-beijing")
     parser.add_argument("--command", type=str, default="/root/vepfs/isaacsim/scripts/home_000_zedx01.sh")
     parser.add_argument("--cpu_number", type=int, default=16)
-    parser.add_argument("--memory_number", type=int, default=128)
+    parser.add_argument("--memory_number", type=int, default=96)
     parser.add_argument("--gpu_type", type=str, default="NVIDIA-L20")
     parser.add_argument("--gpu_count", type=int, default=1)
     parser.add_argument("--family", type=str, default="ml.gni3cl")
