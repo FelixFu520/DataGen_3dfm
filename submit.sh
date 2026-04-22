@@ -100,3 +100,11 @@
 # ./app/python.sh submit_volcengine.py --ak "${VOLC_AK}" --sk "${VOLC_SK}" --private_image_password "${VOLC_PASSWD}"  \
 # --task_name taobao_QAModularParking_zedx01_seed42_2000 \
 # --command  /root/vepfs/isaacsim/DataGen_3dfm/scripts/taobao_QAModularParking_zedx01_seed42_2000.sh 
+
+
+# ============================== QAOffice, 场景中
+# 已执行
+# ./app/python.sh submit_volcengine.py --ak "${VOLC_AK}" --sk "${VOLC_SK}" --private_image_password "${VOLC_PASSWD}"  \
+# --task_name taobao_QAOffice_zedx01_seed42_2000 \
+# --command  /root/vepfs/isaacsim/DataGen_3dfm/scripts/taobao_QAOffice_zedx01_seed42_2000.sh 
+
