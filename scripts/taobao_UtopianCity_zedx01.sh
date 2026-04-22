@@ -4,7 +4,7 @@ cd "$(dirname "$0")/.."
 --scene_usd_url /root/vepfs/isaacsim/DataGen_3dfm/asset_extern/TaoBao/UtopianCity/UtopianCityDemoMap.usd \
 --camera_usd_url /root/vepfs/isaacsim/DataGen_3dfm/assets/zedx01.usd \
 --output_dir /root/vepfs/isaacsim/workdir/3dfm/taobao_UtopianCity_zedx01 \
---occupancy_resolution 0.1 \
+--occupancy_resolution 0.5 \
 --num_points 20 \
 --num_paths 100 \
 --max_angle_deviation 10.0 \
