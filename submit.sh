@@ -47,7 +47,13 @@
 # --command  /root/vepfs/isaacsim/DataGen_3dfm/scripts/taobao_ModularSwimmingPool_zedx01_seed42_2000.sh 
 
 # ============================== NewScandinavian, 场景较小
-# 未执行
+# 已执行
+# ./app/python.sh submit_volcengine.py --ak "${VOLC_AK}" --sk "${VOLC_SK}" --private_image_password "${VOLC_PASSWD}"  \
+# --task_name taobao_NewScandinavian_zedx01_seed42_2000 \
+# --command  /root/vepfs/isaacsim/DataGen_3dfm/scripts/taobao_NewScandinavian_zedx01_seed42_2000.sh 
+
+# ============================== NightClub, 场景较大
+# 已执行
 ./app/python.sh submit_volcengine.py --ak "${VOLC_AK}" --sk "${VOLC_SK}" --private_image_password "${VOLC_PASSWD}"  \
---task_name taobao_NewScandinavian_zedx01_seed42_2000 \
---command  /root/vepfs/isaacsim/DataGen_3dfm/scripts/taobao_NewScandinavian_zedx01_seed42_2000.sh 
+--task_name taobao_NightClub_zedx01_seed42_2000 \
+--command  /root/vepfs/isaacsim/DataGen_3dfm/scripts/taobao_NightClub_zedx01_seed42_2000.sh 
