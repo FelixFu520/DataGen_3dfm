@@ -63,3 +63,10 @@
 # ./app/python.sh submit_volcengine.py --ak "${VOLC_AK}" --sk "${VOLC_SK}" --private_image_password "${VOLC_PASSWD}"  \
 # --task_name taobao_OfficeMeetingRoom2_zedx01_seed42_2000 \
 # --command  /root/vepfs/isaacsim/DataGen_3dfm/scripts/taobao_OfficeMeetingRoom2_zedx01_seed42_2000.sh 
+
+
+# ============================== Old_Laboratory2, 场景适小
+# 已执行
+# ./app/python.sh submit_volcengine.py --ak "${VOLC_AK}" --sk "${VOLC_SK}" --private_image_password "${VOLC_PASSWD}"  \
+# --task_name taobao_Old_Laboratory2_zedx01_seed42_2000 \
+# --command  /root/vepfs/isaacsim/DataGen_3dfm/scripts/taobao_Old_Laboratory2_zedx01_seed42_2000.sh 

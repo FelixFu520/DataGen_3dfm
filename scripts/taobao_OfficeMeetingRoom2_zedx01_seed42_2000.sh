@@ -9,8 +9,8 @@ cd "$(dirname "$0")/.."
 --num_points 20 \
 --num_paths 150 \
 --max_angle_deviation 10.0 \
---erode_iterations 10 \
---wall_dilate_iterations 10 \
+--erode_iterations 2 \
+--wall_dilate_iterations 2 \
 
 ./app/python.sh show_data.py \
 --data_dir /root/vepfs/isaacsim/workdir/3dfm/taobao_OfficeMeetingRoom2_zedx01_seed42_2000 \
