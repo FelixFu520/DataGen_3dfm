@@ -6,7 +6,7 @@ cd "$(dirname "$0")/.."
 --output_dir /root/vepfs/isaacsim/workdir/3dfm/taobao_ShowRoom_zedx01 \
 --occupancy_resolution 0.5 \
 --num_points 20 \
---num_paths 100 \
+--num_paths 150 \
 --max_angle_deviation 10.0 \
 --erode_iterations 2 \
 --wall_dilate_iterations 2 \
