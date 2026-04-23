@@ -66,28 +66,28 @@ isaacsim资产可以从网络和本地加载，上一步已经下载了资产，
 
 ```
 [settings]
-persistent.isaac.asset_root.default = "/home/fufa/isaac_sim/5.1_asset/Assets/Isaac/5.1"
+persistent.isaac.asset_root.default = "/root/5.1_asset/Assets/Isaac/5.1"
 
 exts."isaacsim.gui.content_browser".folders = [
-    "/home/fufa/isaac_sim/5.1_asset/Assets/Isaac/5.1/Isaac/Robots",
-    "/home/fufa/isaac_sim/5.1_asset/Assets/Isaac/5.1/Isaac/People",
-    "/home/fufa/isaac_sim/5.1_asset/Assets/Isaac/5.1/Isaac/IsaacLab",
-    "/home/fufa/isaac_sim/5.1_asset/Assets/Isaac/5.1/Isaac/Props",
-    "/home/fufa/isaac_sim/5.1_asset/Assets/Isaac/5.1/Isaac/Environments",
-    "/home/fufa/isaac_sim/5.1_asset/Assets/Isaac/5.1/Isaac/Materials",
-    "/home/fufa/isaac_sim/5.1_asset/Assets/Isaac/5.1/Isaac/Samples",
-    "/home/fufa/isaac_sim/5.1_asset/Assets/Isaac/5.1/Isaac/Sensors",
+    "/root/5.1_asset/Assets/Isaac/5.1/Isaac/Robots",
+    "/root/5.1_asset/Assets/Isaac/5.1/Isaac/People",
+    "/root/5.1_asset/Assets/Isaac/5.1/Isaac/IsaacLab",
+    "/root/5.1_asset/Assets/Isaac/5.1/Isaac/Props",
+    "/root/5.1_asset/Assets/Isaac/5.1/Isaac/Environments",
+    "/root/5.1_asset/Assets/Isaac/5.1/Isaac/Materials",
+    "/root/5.1_asset/Assets/Isaac/5.1/Isaac/Samples",
+    "/root/5.1_asset/Assets/Isaac/5.1/Isaac/Sensors",
 ]
 
 exts."isaacsim.asset.browser".folders = [
-    "/home/fufa/isaac_sim/5.1_asset/Assets/Isaac/5.1/Isaac/Robots",
-    "/home/fufa/isaac_sim/5.1_asset/Assets/Isaac/5.1/Isaac/People",
-    "/home/fufa/isaac_sim/5.1_asset/Assets/Isaac/5.1/Isaac/IsaacLab",
-    "/home/fufa/isaac_sim/5.1_asset/Assets/Isaac/5.1/Isaac/Props",
-    "/home/fufa/isaac_sim/5.1_asset/Assets/Isaac/5.1/Isaac/Environments",
-    "/home/fufa/isaac_sim/5.1_asset/Assets/Isaac/5.1/Isaac/Materials",
-    "/home/fufa/isaac_sim/5.1_asset/Assets/Isaac/5.1/Isaac/Samples",
-    "/home/fufa/isaac_sim/5.1_asset/Assets/Isaac/5.1/Isaac/Sensors",
+    "/root/5.1_asset/Assets/Isaac/5.1/Isaac/Robots",
+    "/root/5.1_asset/Assets/Isaac/5.1/Isaac/People",
+    "/root/5.1_asset/Assets/Isaac/5.1/Isaac/IsaacLab",
+    "/root/5.1_asset/Assets/Isaac/5.1/Isaac/Props",
+    "/root/5.1_asset/Assets/Isaac/5.1/Isaac/Environments",
+    "/root/5.1_asset/Assets/Isaac/5.1/Isaac/Materials",
+    "/root/5.1_asset/Assets/Isaac/5.1/Isaac/Samples",
+    "/root/5.1_asset/Assets/Isaac/5.1/Isaac/Sensors",
 ]
 
 ```
@@ -103,7 +103,7 @@ ln -s $HOME/isaac_sim/5.1_asset asset_internal  # 链接isaacsim5.1资产
 ln -s $HOME/isaac_sim/asset_extern asset_extern # 链接生成的场景资产
 
 # 安装一些库
-./app/python.sh -m pip install loguru  cupy-cuda12x
+./app/python.sh -m pip install loguru cupy-cuda12x plyfile
 ```
 ## 生成&可视化数据
 ```
