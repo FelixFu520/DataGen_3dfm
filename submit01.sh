@@ -42,6 +42,8 @@ TASKS=(
   # taobao_StylizedRoom_zedx01_seed42_2000 # 已执行
   # taobao_UtopianCity_zedx01_seed42_2000 # 已执行
   # taobao_VictorianLivingRoom_zedx01_seed42_2000 # 已执行
+
+  # TaoBao02场景
 )
 
 for task in "${TASKS[@]}"; do
