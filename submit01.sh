@@ -34,10 +34,14 @@ TASKS=(
   # taobao_QAModularParking_zedx01_seed42_2000 # 已执行
   # taobao_QAOffice_zedx01_seed42_2000 # 已执行
   # taobao_QAPolice_zedx01_seed42_2000  # 已执行
-  # taobao_QARoom_zedx01_seed42_2000 # 已执行
   # taobao_ResearchCenter_zedx01_seed42_2000 # 已执行
   # taobao_RetroOffice_zedx01_seed42_2000 # 已执行
   # taobao_SchoolGym_zedx01_seed42_2000 # 已执行
+  # taobao_ShootingRange_zedx01_seed42_2000 # 已执行
+  # taobao_ShowRoom_zedx01_seed42_2000 # 已执行
+  # taobao_StylizedRoom_zedx01_seed42_2000 # 已执行
+  # taobao_UtopianCity_zedx01_seed42_2000 # 已执行
+  # taobao_VictorianLivingRoom_zedx01_seed42_2000 # 已执行
 )
 
 for task in "${TASKS[@]}"; do
