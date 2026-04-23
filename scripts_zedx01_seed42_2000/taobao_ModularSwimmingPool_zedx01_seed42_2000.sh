@@ -11,7 +11,8 @@ cd "$(dirname "$0")/.."
 --num_paths 20 \
 --max_angle_deviation 10.0 \
 --erode_iterations 2 \
---wall_dilate_iterations 2 \
+--obstacle_dilate_iterations 2 \
+--obstacle_envelope_iterations 0 \
 --step_size_xy 0.3 \
 --step_size_z 0.1 \
 --max_dz_per_step 0.1
