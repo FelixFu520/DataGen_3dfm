@@ -125,7 +125,7 @@ if __name__ == "__main__":
 
         # save semantic_occupancy ply
         save_semantic_occupancy_ply(occupied_data, save_occupancy_occupied_ply_path)
-        save_semantic_occupancy_ply(free_data, save_occupancy_free_ply_path)
+        # save_semantic_occupancy_ply(free_data, save_occupancy_free_ply_path)
     else:
         occupied_data = np.load(save_occupancy_occupied_npy_path)
         free_data = np.load(save_occupancy_free_npy_path)
