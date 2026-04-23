@@ -70,61 +70,29 @@ class Camera:
         self.distance_to_camera_annotator = None
         self.distance_to_image_plane_annotator = None
 
-    def _warmup_render_product(self, warmup_frames: int = 5):
-        """创建 render_product 后先走几帧, 避免 Isaac Sim 5.1 已知 bug:
-        LdrColor/distance annotator attach 时因 render_product 尚未初始化
-        (size=0) 触发 'Unable to write from unknown dtype, kind=f, size=0'"""
-        try:
-            import omni.kit.app
-            app = omni.kit.app.get_app()
-            for _ in range(warmup_frames):
-                app.update()
-        except Exception as e:
-            logger.warning(f"render_product warmup 失败, 忽略: {e}")
-
-    def _attach_with_retry(self, annotator, render_product, name: str, max_retries: int = 5):
-        """attach 失败时 step 几帧再重试, 规避 Isaac Sim 5.1 render_product 未就绪问题"""
-        import omni.kit.app
-        app = omni.kit.app.get_app()
-        last_err = None
-        for attempt in range(max_retries):
-            try:
-                annotator.attach(render_product)
-                return
-            except TypeError as e:
-                last_err = e
-                logger.warning(
-                    f"{name} annotator attach 失败(第 {attempt + 1}/{max_retries} 次), "
-                    f"render_product 可能未就绪, step 几帧后重试: {e}"
-                )
-                for _ in range(10):
-                    app.update()
-        raise RuntimeError(f"{name} annotator attach 重试 {max_retries} 次仍失败: {last_err}")
-
     def enable_rendering(self):
         """启用渲染"""
         if self.render_product is None:
             self.render_product = rep.create.render_product(self.prim_path, self.resolution, force_new=True)
-            self._warmup_render_product()
-
+        
     def enable_rgb(self):
         """启用RGB渲染"""
         if self.render_product is None:
             self.enable_rendering()
-
+        
         if self.LdrColor_annotator is None:
             self.LdrColor_annotator = rep.AnnotatorRegistry.get_annotator("LdrColor")
-            self._attach_with_retry(self.LdrColor_annotator, self.render_product, "LdrColor")
-
+            self.LdrColor_annotator.attach(self.render_product)
+        
     def enable_distance_to_camera(self):
         """启用深度渲染"""
         if self.render_product is None:
             self.enable_rendering()
-
+        
         if self.distance_to_camera_annotator is None:
             self.distance_to_camera_annotator = rep.AnnotatorRegistry.get_annotator("distance_to_camera")
-            self._attach_with_retry(self.distance_to_camera_annotator, self.render_product, "distance_to_camera")
-
+            self.distance_to_camera_annotator.attach(self.render_product)
+        
     def enable_distance_to_image_plane(self):
         """启用深度渲染"""
         if self.render_product is None:
@@ -132,7 +100,7 @@ class Camera:
 
         if self.distance_to_image_plane_annotator is None:
             self.distance_to_image_plane_annotator = rep.AnnotatorRegistry.get_annotator("distance_to_image_plane")
-            self._attach_with_retry(self.distance_to_image_plane_annotator, self.render_product, "distance_to_image_plane")
+            self.distance_to_image_plane_annotator.attach(self.render_product)
     
     def enable_all(self):
         """启用所有渲染"""
