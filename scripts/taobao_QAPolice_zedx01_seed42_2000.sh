@@ -1,6 +1,7 @@
 cd "$(dirname "$0")/.."
 
 ./app/python.sh gen_data.py \
+--seed 42 \
 --scene_usd_url /root/vepfs/isaacsim/DataGen_3dfm/asset_extern/TaoBao/QAPoliceStation/OA_PoliceStation_Demo.usd \
 --camera_usd_url /root/vepfs/isaacsim/DataGen_3dfm/assets/zedx01.usd \
 --output_dir /root/vepfs/isaacsim/workdir/3dfm/taobao_QAPolice_zedx01_seed42_2000 \
