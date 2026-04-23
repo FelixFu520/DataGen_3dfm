@@ -103,7 +103,7 @@ ln -s $HOME/isaac_sim/5.1_asset asset_internal  # 链接isaacsim5.1资产
 ln -s $HOME/isaac_sim/asset_extern asset_extern # 链接生成的场景资产
 
 # 安装一些库
-./app/python.sh -m pip install loguru  cupy-cuda11x
+./app/python.sh -m pip install loguru  cupy-cuda12x
 ```
 ## 生成&可视化数据
 ```
