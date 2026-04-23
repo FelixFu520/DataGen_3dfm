@@ -1,13 +1,16 @@
 """
-3D 轨迹生成：
+3D 轨迹生成（室内室外通用）：
 流程：
   1. 输入 free_xyz / occupied_xyz 体素点
-  2. 3D 腐蚀 free_xyz（向内收缩 M 层）
-  3. 用 occupied_xyz 做 3D flood-fill 求"室内/外包裹体"，将腐蚀后点过滤，
-     不在室内的丢掉
-  4. 在过滤后的 free 点中随机选起点，xy 方向保持 max_angle_deviation 平滑、
+  2. 3D 腐蚀 free_xyz（向内收缩 M 层），让 free 点远离自身连通区域的边界
+  3. 3D 膨胀 occupied_xyz 得到"障碍禁区"，再把落在禁区内的 free 点剔除，
+     让 free 点离所有障碍物至少 N 个体素（防贴墙/穿模）
+  4. 3D 大膨胀 occupied_xyz 得到"活动包络体", 只保留落在包络内的 free 点,
+     让 free 点离某个障碍物最多 K 个体素（防飞在半空 / 脱离场景主体）
+     —— 仅当 obstacle_envelope_iterations > 0 时启用
+  5. 在过滤后的 free 点中随机选起点，xy 方向保持 max_angle_deviation 平滑、
      z 方向用 max_dz_per_step 限制，按 step_size 做 3D 随机游走生成轨迹
-  5. 将每条轨迹保存为 PLY（点云 + 线段）
+  6. 将每条轨迹保存为 PLY（点云 + 线段）
 """
 
 import os
@@ -17,7 +20,7 @@ from loguru import logger
 from typing import List, Optional, Tuple
 
 from plyfile import PlyData, PlyElement
-from scipy.ndimage import binary_erosion, binary_dilation, label
+from scipy.ndimage import binary_erosion, binary_dilation
 
 
 # ============================================================
@@ -107,79 +110,131 @@ def erode_free_positions_3d(
 
 
 # ============================================================
-# 3D flood-fill 求室内（外包裹体）
+# 3D 膨胀障碍物并剔除贴近障碍的 free 点（室内外通用）
 # ============================================================
-def filter_indoor_positions_3d(
+def filter_free_by_obstacle_dilation(
     free_xyz: np.ndarray,
     occupied_xyz: np.ndarray,
     resolution: float,
-    wall_dilate_iterations: int = 2,
+    obstacle_dilate_iterations: int = 2,
 ) -> np.ndarray:
     """
-    用 3D flood-fill 从 bbox 外部向内扩散，与外部连通的 free 体素视为屋外，
-    不连通的（被墙壁围住）视为屋内。仅保留屋内的 free_xyz 点。
+    把 occupied_xyz 做 3D 形态学膨胀得到"障碍禁区"体素，再剔除所有落在禁区
+    内的 free 点。几何含义: 让 free 点离任意 occupied 物体至少
+    `obstacle_dilate_iterations` 个体素 (等价于至少 N * resolution 米)。
+
+    与旧版 flood-fill "屋内判定" 的区别:
+      - 不再区分"室内/室外", 所以室内场景 (有天花板) 和室外场景
+        (山/树/建筑物零散分布, 没有封闭外壳) 可以统一处理;
+      - 不会因为某个 free 点"和 bbox 外部连通"就剔除它, 因此室外
+        开阔区域的 free 点会被正常保留;
+      - 仅依赖"远离障碍"这一条件, 语义清晰可控。
 
     Args:
-        free_xyz:               (N, 3)
-        occupied_xyz:           (M, 3)，用作墙壁
-        resolution:             分辨率
-        wall_dilate_iterations: 对墙壁做膨胀以填门窗缝隙
+        free_xyz:                   (N, 3) 或 (N, 4)
+        occupied_xyz:               (M, 3) 或 (M, 4), 作为障碍
+        resolution:                 与 occupancy 分辨率一致
+        obstacle_dilate_iterations: 障碍膨胀层数, 0 表示不膨胀 (仅剔除
+                                    与 occupied 完全重合的 free, 通常没有)
     Returns:
-        (K, 3) 仅包含屋内的点
+        (K, 3) 过滤后的 free 点
     """
-    if len(free_xyz) == 0 or len(occupied_xyz) == 0:
+    if len(free_xyz) == 0:
         return free_xyz[:, :3] if free_xyz.shape[1] > 3 else free_xyz
 
     free_xyz3 = free_xyz[:, :3]
+
+    if len(occupied_xyz) == 0 or obstacle_dilate_iterations < 0:
+        return free_xyz3
+
     occupied_xyz3 = occupied_xyz[:, :3]
     all_xyz = np.vstack([free_xyz3, occupied_xyz3])
-    # padding 要够大，以保证 bbox 四周有一圈"屋外空气"供 flood-fill 作为种子
-    padding = max(3, wall_dilate_iterations + 2)
+    padding = max(2, obstacle_dilate_iterations + 1)
     grid = VoxelGrid3D.from_points(all_xyz, resolution, padding=padding)
     nx, ny, nz = grid.shape
 
-    wall = np.zeros((nx, ny, nz), dtype=bool)
+    forbidden = np.zeros((nx, ny, nz), dtype=bool)
     occ_idx = grid.clip_index(grid.world_to_index(occupied_xyz3))
-    wall[occ_idx[:, 0], occ_idx[:, 1], occ_idx[:, 2]] = True
+    forbidden[occ_idx[:, 0], occ_idx[:, 1], occ_idx[:, 2]] = True
 
-    struct_full = np.ones((3, 3, 3), dtype=bool)
-    if wall_dilate_iterations > 0:
-        wall = binary_dilation(wall, structure=struct_full, iterations=wall_dilate_iterations)
-
-    # "空气" = 非墙壁。用 26 连通做连通域标记，包含 bbox 边界的那一块连通域就是屋外
-    air = ~wall
-    # 6 连通更严格（更难"漏出去"），这里选 6 连通更接近 3D flood-fill 直觉
-    struct_6 = np.array([
-        [[0, 0, 0], [0, 1, 0], [0, 0, 0]],
-        [[0, 1, 0], [1, 1, 1], [0, 1, 0]],
-        [[0, 0, 0], [0, 1, 0], [0, 0, 0]],
-    ], dtype=bool)
-    labeled, num_components = label(air, structure=struct_6)
-
-    # 收集所有与 bbox 边界接触的 label
-    boundary_labels = set()
-    for face in [
-        labeled[0, :, :], labeled[-1, :, :],
-        labeled[:, 0, :], labeled[:, -1, :],
-        labeled[:, :, 0], labeled[:, :, -1],
-    ]:
-        boundary_labels.update(np.unique(face).tolist())
-    boundary_labels.discard(0)
-
-    # 屋外 mask = 属于任何边界连通域
-    outdoor_mask = np.isin(labeled, list(boundary_labels))
+    if obstacle_dilate_iterations > 0:
+        struct_full = np.ones((3, 3, 3), dtype=bool)
+        forbidden = binary_dilation(
+            forbidden, structure=struct_full, iterations=obstacle_dilate_iterations
+        )
 
     free_idx = grid.clip_index(grid.world_to_index(free_xyz3))
-    # 室内 = 既不在"屋外连通域"，也不在"膨胀后的墙体"内
-    # (墙体膨胀可能会吞噬紧贴外墙的 free 点, 这些点实际上在屋外, 需要一并剔除)
-    in_outdoor = outdoor_mask[free_idx[:, 0], free_idx[:, 1], free_idx[:, 2]]
-    in_wall = wall[free_idx[:, 0], free_idx[:, 1], free_idx[:, 2]]
-    is_indoor = (~in_outdoor) & (~in_wall)
-    filtered = free_xyz3[is_indoor]
+    in_forbidden = forbidden[free_idx[:, 0], free_idx[:, 1], free_idx[:, 2]]
+    filtered = free_xyz3[~in_forbidden]
     logger.info(
-        f"3D 室内过滤: {len(free_xyz3)} -> {len(filtered)} 点 "
-        f"(移除 {len(free_xyz3) - len(filtered)} 个屋外点, "
-        f"wall_dilate={wall_dilate_iterations}, air_components={num_components})"
+        f"3D 障碍禁区过滤: {len(free_xyz3)} -> {len(filtered)} 点 "
+        f"(移除 {len(free_xyz3) - len(filtered)} 个贴近障碍的点, "
+        f"obstacle_dilate={obstacle_dilate_iterations})"
+    )
+    return filtered
+
+
+# ============================================================
+# 3D 大膨胀障碍物得到"活动包络体"，仅保留落在包络内的 free 点（室外尤为重要）
+# ============================================================
+def filter_free_by_obstacle_envelope(
+    free_xyz: np.ndarray,
+    occupied_xyz: np.ndarray,
+    resolution: float,
+    obstacle_envelope_iterations: int,
+) -> np.ndarray:
+    """
+    把 occupied_xyz 做"大膨胀"形成一个包络体 B, 只保留落在 B 内部的 free 点。
+    几何含义: 让 free 点离任意 occupied 物体最多
+    `obstacle_envelope_iterations` 个体素 (即 N * resolution 米) 以内, 从而
+    把"飞在空中远离场景主体"的点剔除掉。
+
+    典型用途:
+      - 室外场景中, free_xyz 会包含"山顶上方几十米的空气", 这些点应被剔除;
+      - 室内场景中, 通常所有房间尺寸都小于 N * resolution, 因此几乎不会有
+        free 点被这一步剔除, 这一步相当于 no-op, 安全。
+
+    Args:
+        free_xyz:                      (N, 3) 或 (N, 4)
+        occupied_xyz:                  (M, 3) 或 (M, 4), 作为包络种子
+        resolution:                    与 occupancy 分辨率一致
+        obstacle_envelope_iterations:  包络膨胀迭代次数;
+                                       <=0 表示关闭此过滤 (直接返回 free_xyz)
+    Returns:
+        (K, 3) 过滤后的 free 点
+    """
+    if len(free_xyz) == 0:
+        return free_xyz[:, :3] if free_xyz.shape[1] > 3 else free_xyz
+
+    free_xyz3 = free_xyz[:, :3]
+
+    # 关闭或无障碍可用 -> 直接返回（不做任何裁剪）
+    if obstacle_envelope_iterations <= 0 or len(occupied_xyz) == 0:
+        return free_xyz3
+
+    occupied_xyz3 = occupied_xyz[:, :3]
+    all_xyz = np.vstack([free_xyz3, occupied_xyz3])
+    padding = max(2, obstacle_envelope_iterations + 1)
+    grid = VoxelGrid3D.from_points(all_xyz, resolution, padding=padding)
+    nx, ny, nz = grid.shape
+
+    envelope = np.zeros((nx, ny, nz), dtype=bool)
+    occ_idx = grid.clip_index(grid.world_to_index(occupied_xyz3))
+    envelope[occ_idx[:, 0], occ_idx[:, 1], occ_idx[:, 2]] = True
+
+    struct_full = np.ones((3, 3, 3), dtype=bool)
+    envelope = binary_dilation(
+        envelope, structure=struct_full, iterations=obstacle_envelope_iterations
+    )
+
+    free_idx = grid.clip_index(grid.world_to_index(free_xyz3))
+    in_envelope = envelope[free_idx[:, 0], free_idx[:, 1], free_idx[:, 2]]
+    filtered = free_xyz3[in_envelope]
+    logger.info(
+        f"3D 障碍包络过滤: {len(free_xyz3)} -> {len(filtered)} 点 "
+        f"(移除 {len(free_xyz3) - len(filtered)} 个远离障碍的点, "
+        f"obstacle_envelope={obstacle_envelope_iterations}, "
+        f"约 {obstacle_envelope_iterations * resolution:.2f} 米)"
     )
     return filtered
 
@@ -639,7 +694,8 @@ def gen_path_3d(
     num_points: int = 30,
     resolution: float = 0.1,
     erode_iterations: int = 3,
-    wall_dilate_iterations: int = 2,
+    obstacle_dilate_iterations: int = 2,
+    obstacle_envelope_iterations: int = 0,
     step_size_xy: float = 0.3,
     step_size_z: float = 0.1,
     max_angle_deviation: float = 10.0,
@@ -649,11 +705,14 @@ def gen_path_3d(
     """
     生成若干条 3D 轨迹，保存轨迹 npy 和每条轨迹的 PLY 可视化。
 
-    流程：
-      1) 3D 腐蚀 free_position
-      2) 用 occupied_position 做 3D flood-fill，仅保留室内点
-      3) 在过滤后的点云上做 3D 随机游走
-      4) 输出 paths.npy、filtered_free_positions.ply（可选）、以及每条路径 {idx:04d}.ply
+    流程（室内室外通用）:
+      1) 3D 腐蚀 free_position, 让 free 点远离自身连通边界
+      2) 3D 膨胀 occupied_position 得到"障碍禁区", 剔除落在禁区内的 free 点
+         (防贴墙/穿模; obstacle_dilate_iterations)
+      3) 3D 大膨胀 occupied_position 得到"活动包络体", 仅保留落在包络内
+         的 free 点 (防飞在半空; obstacle_envelope_iterations, <=0 则关闭)
+      4) 在过滤后的点云上做 3D 随机游走
+      5) 输出 paths.npy、filtered_free_positions.ply（可选）、以及每条路径 {idx:04d}.ply
 
     Returns:
         paths_xyz: (num_paths, num_points, 3) ndarray
@@ -667,26 +726,30 @@ def gen_path_3d(
         free_xyz, occupied_xyz, resolution, erode_iterations
     )
 
-    indoor_xyz = filter_indoor_positions_3d(
-        eroded_xyz, occupied_xyz, resolution, wall_dilate_iterations
+    filtered_xyz = filter_free_by_obstacle_dilation(
+        eroded_xyz, occupied_xyz, resolution, obstacle_dilate_iterations
     )
 
-    if len(indoor_xyz) == 0:
+    filtered_xyz = filter_free_by_obstacle_envelope(
+        filtered_xyz, occupied_xyz, resolution, obstacle_envelope_iterations
+    )
+
+    if len(filtered_xyz) == 0:
         raise RuntimeError(
             "过滤后点数为 0，无法生成路径。请检查 erode_iterations / "
-            "wall_dilate_iterations / resolution 参数"
+            "obstacle_dilate_iterations / obstacle_envelope_iterations / resolution 参数"
         )
 
     if save_filtered_ply:
         filtered_ply_path = os.path.join(output_dir, "filtered_free_positions.ply")
-        save_filtered_points_ply(indoor_xyz, filtered_ply_path)
-        logger.info(f"过滤后 free 点云已保存: {filtered_ply_path}, 点数: {len(indoor_xyz)}")
+        save_filtered_points_ply(filtered_xyz, filtered_ply_path)
+        logger.info(f"过滤后 free 点云已保存: {filtered_ply_path}, 点数: {len(filtered_xyz)}")
 
     paths_xyz: List[np.ndarray] = []
     for path_idx in range(num_paths):
         logger.info(f"生成 3D 路径 {path_idx + 1}/{num_paths}...")
         path_xyz = generate_random_path_3d(
-            positions_xyz=indoor_xyz,
+            positions_xyz=filtered_xyz,
             num_points=num_points,
             step_size_xy=step_size_xy,
             step_size_z=step_size_z,
@@ -702,7 +765,7 @@ def gen_path_3d(
 
     for path_idx, path_xyz in enumerate(paths_xyz):
         ply_path = os.path.join(output_dir, f"{path_idx:04d}.ply")
-        save_path_ply(path_xyz, indoor_xyz, ply_path)
+        save_path_ply(path_xyz, filtered_xyz, ply_path)
     logger.info(f"已保存 {len(paths_xyz)} 条路径的 PLY 可视化到 {output_dir}")
 
     return paths_arr
