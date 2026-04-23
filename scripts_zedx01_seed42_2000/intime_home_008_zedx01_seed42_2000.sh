@@ -19,4 +19,3 @@ cd "$(dirname "$0")/.."
 --data_dir /root/vepfs/isaacsim/workdir/3dfm_zedx01_seed42_2000/home008_zedx01_seed42_2000 \
 --save_dir /root/vepfs/isaacsim/workdir/3dfm_zedx01_seed42_2000/home008_zedx01_seed42_2000/vis \
 --show_num 4
-

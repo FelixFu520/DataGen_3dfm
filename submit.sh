@@ -3,17 +3,20 @@ SCRIPT_DIR="/root/vepfs/isaacsim/DataGen_3dfm/scripts_zedx01_seed42_2000"
 # 每项为 task_name，对应脚本为 ${SCRIPT_DIR}/${task}.sh
 TASKS=(
   # Intime_Home场景
-  # intime_home_000_zedx01_seed42_2000
-  intime_home_001_zedx01_seed42_2000
-  intime_home_002_zedx01_seed42_2000
-  intime_home_003_zedx01_seed42_2000
-  intime_home_004_zedx01_seed42_2000
-  intime_home_005_zedx01_seed42_2000
-  intime_home_006_zedx01_seed42_2000
-  intime_home_007_zedx01_seed42_2000
-  intime_home_008_zedx01_seed42_2000
-  intime_home_009_zedx01_seed42_2000
-  intime_home_010_zedx01_seed42_2000
+  # intime_home_000_zedx01_seed42_2000  # 已执行
+  # intime_home_001_zedx01_seed42_2000
+  # intime_home_002_zedx01_seed42_2000
+  # intime_home_003_zedx01_seed42_2000
+  # intime_home_004_zedx01_seed42_2000
+  # intime_home_005_zedx01_seed42_2000
+  # intime_home_006_zedx01_seed42_2000
+  # intime_home_007_zedx01_seed42_2000
+  # intime_home_008_zedx01_seed42_2000
+  # intime_home_009_zedx01_seed42_2000
+  # intime_home_010_zedx01_seed42_2000
+
+  # Taobao场景
+  # taobao_AIUE_V01_002_zedx01_seed42_2000  # 已执行
 )
 
 for task in "${TASKS[@]}"; do
