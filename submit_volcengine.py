@@ -220,6 +220,7 @@ if __name__ == "__main__":
     parser.add_argument("--gpu_count", type=int, default=1)
     parser.add_argument("--family", type=str, default="ml.gni3cl")
     parser.add_argument("--zone_id", type=str, default="cn-beijing-c")
+    parser.add_argument("--is_flexible", type=bool, default=True)
     args = parser.parse_args()
 
     # 以下参数含义及在个人信息获取可以参照2.3节
@@ -248,6 +249,7 @@ if __name__ == "__main__":
     gpu_count = args.gpu_count
     family = args.family
     zone_id = args.zone_id
+    is_flexible = args.is_flexible
 
     create_ml_job(
         command=f"bash {args.command}",  
@@ -271,5 +273,6 @@ if __name__ == "__main__":
         gpu_type=gpu_type,
         gpu_count=gpu_count,
         family=family,
-        zone_id=zone_id
+        zone_id=zone_id,
+        is_flexible=is_flexible
     )
