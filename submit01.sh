@@ -16,7 +16,9 @@ TASKS=(
   # intime_home_010_zedx01_seed42_2000
 
   # Taobao场景
+  taobao_AI_vol33_scene_04_zedx01_seed42_2000
   # taobao_AIUE_V01_002_zedx01_seed42_2000  # 已执行
+  taobao_AIUE_V01_004_zedx01_seed42_2000
 )
 
 for task in "${TASKS[@]}"; do
