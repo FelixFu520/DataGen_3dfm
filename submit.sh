@@ -1,4 +1,4 @@
-SCRIPT_DIR="/root/vepfs/isaacsim/DataGen_3dfm/scripts_seed42"
+SCRIPT_DIR="/root/vepfs/isaacsim/DataGen_3dfm/scripts_seed42_2000"
 
 # 每项为 task_name，对应脚本为 ${SCRIPT_DIR}/${task}.sh
 TASKS=(
