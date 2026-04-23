@@ -31,6 +31,7 @@ TASKS=(
   # taobao_ParkingGarage_zedx01_seed42_2000 # 已执行
   # taobao_PostSovietFlat2_zedx01_seed42_2000 # 已执行
   # taobao_PostSovietKitchen_zedx01_seed42_2000 # 已执行
+  taobao_QAModularParking_zedx01_seed42_2000 # 已执行
 )
 
 for task in "${TASKS[@]}"; do
