@@ -25,7 +25,8 @@ TASKS=(
   # taobao_ModularSwimmingPool_zedx01_seed42_2000  # 已执行
   # taobao_NewScandinavian_zedx01_seed42_2000  # 已执行
   # taobao_NightClub_zedx01_seed42_2000  # 已执行
-  # taobao_OfficeMeetingRoom2_zedx01_seed42_2000  # 已执行 
+  # taobao_OfficeMeetingRoom2_zedx01_seed42_2000  # 已执行
+  # taobao_Old_Laboratory2_zedx01_seed42_2000  # 已执行
 )
 
 for task in "${TASKS[@]}"; do
