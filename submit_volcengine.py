@@ -28,6 +28,7 @@ def create_ml_job(
     gpu_count=1, # 指定要使用的GPU个数
     family="ml.gni3cl", # 指定显卡的家族
     zone_id="cn-beijing-c", # 地址服务器的可用区,如何查看请见代码块下方zone_id详解
+    is_flexible=True, # 是否使用灵活配比模式, 预约火山资源时使用False
 ):
     # 1. 初始化配置（优先用外部传入的AK/SK，无则用默认值）
     config = volcenginesdkcore.Configuration()
@@ -40,31 +41,49 @@ def create_ml_job(
     api_instance = mlpsdk.MLPLATFORM20240701Api()
 
     # 3. 构建任务请求
-    resource_config=mlpsdk.ResourceConfigForCreateJobInput(
-        resource_queue_id=resource_queue_id,
-        roles=[
-            mlpsdk.RoleForCreateJobInput(
-                name='worker',  # 角色名（固定为worker即可）
-                replicas=1,  # 实例数量（如不需要多机分布式计算，写1即可，如需分布式计算，需要几机就写几）
-                resource=mlpsdk.ResourceForCreateJobInput(
-                    # 以下注释的两行为使用整机资源运行任务，instance_type_id为机器类型，如使用整机运行，则需要解开以下两行的注释，并注释以下未注释的所有参数
-                    # instance_type_id=instance_type_id,
-                    # type='mlp_flavor',  # 资源类型（固定为mlp_flavor）
-                    
-                    #以下为灵活配比模式，可以选择需要的资源运行任务，注意其填写的最大资源值为单机上限 
-                    type="Flexible",  # 指定为灵活配比
-                    zone_id=zone_id,  # 地址服务器的可用区,如何查看请见代码块下方zone_id详解
-                    flexible_resource_claim={
-                        "Cpu": cpu_number,  # 指定要使用的CPU核数
-                        "MemoryGiB": memory_number, # 指定要使用的内存，单位为GB
-                        "GpuType": gpu_type, # 指定显卡的类型
-                        "Family": family, # 指定显卡的家族
-                        "GpuCount": gpu_count # 指定要使用的GPU个数
-                    },
+    if is_flexible:
+        resource_config=mlpsdk.ResourceConfigForCreateJobInput(
+            resource_queue_id=resource_queue_id,
+            roles=[
+                mlpsdk.RoleForCreateJobInput(
+                    name='worker',  # 角色名（固定为worker即可）
+                    replicas=1,  # 实例数量（如不需要多机分布式计算，写1即可，如需分布式计算，需要几机就写几）
+                    resource=mlpsdk.ResourceForCreateJobInput(
+                        # 以下注释的两行为使用整机资源运行任务，instance_type_id为机器类型，如使用整机运行，则需要解开以下两行的注释，并注释以下未注释的所有参数
+                        # instance_type_id=instance_type_id,
+                        # type='mlp_flavor',  # 资源类型（固定为mlp_flavor）
+                        
+                        #以下为灵活配比模式，可以选择需要的资源运行任务，注意其填写的最大资源值为单机上限 
+                        type="Flexible",  # 指定为灵活配比
+                        zone_id=zone_id,  # 地址服务器的可用区,如何查看请见代码块下方zone_id详解
+                        flexible_resource_claim={
+                            "Cpu": cpu_number,  # 指定要使用的CPU核数
+                            "MemoryGiB": memory_number, # 指定要使用的内存，单位为GB
+                            "GpuType": gpu_type, # 指定显卡的类型
+                            "Family": family, # 指定显卡的家族
+                            "GpuCount": gpu_count # 指定要使用的GPU个数
+                        },
+                    )
                 )
-            )
-        ]
-    )
+            ]
+        )
+    else:
+        resource_config=mlpsdk.ResourceConfigForCreateJobInput(
+            # resource_queue_id=resource_queue_id,
+            resource_reservation_plan_id=resource_queue_id,
+            priority=6,
+            roles=[
+                mlpsdk.RoleForCreateJobInput(
+                    name='worker',  # 角色名（固定为worker即可）
+                    replicas=1,     # 实例数量（默认1，可根据需求调整）
+                    resource=mlpsdk.ResourceForCreateJobInput(
+						instance_type_id=instance_type_id,
+						type="Preset",
+						zone_id=zone_id,
+					)
+                )
+            ]
+        )
     runtime_config=mlpsdk.RuntimeConfigForCreateJobInput(
         command=command,  # 设置任务默认运行的命令
         framework='Custom',  # 框架（根据你的实际需求调整，如PyTorch, MPI, TensorFlow, Ray, Custom）
@@ -85,46 +104,78 @@ def create_ml_job(
             )
         )
     )
-    storage_config=mlpsdk.StorageConfigForCreateJobInput(
-        credential=mlpsdk.ConvertCredentialForCreateJobInput(
-            access_key=config.ak,  # 对象存储所需的权限ak
-            secret_access_key=config.sk # 对象存储所需的权限sk
-        ),
-        storages=[
-            mlpsdk.StorageForCreateJobInput(
-                type='Tos',  # 指定为挂载对象存储
-                mount_path=tos_mount_path,   # 指定将对象存储挂载到任务的路径
-                config=mlpsdk.ConfigForCreateJobInput(
-                    tos=mlpsdk.TosForCreateJobInput(
-                        bucket=tos_name,      # 指定对象存储名称
-                        prefix=tos_prefix # 将对象存储的指定目录挂载到任务中
-                    )
-                )
+    if is_flexible:
+        storage_config=mlpsdk.StorageConfigForCreateJobInput(
+            credential=mlpsdk.ConvertCredentialForCreateJobInput(
+                access_key=config.ak,  # 对象存储所需的权限ak
+                secret_access_key=config.sk # 对象存储所需的权限sk
             ),
-            mlpsdk.StorageForCreateJobInput(
-                type='Vepfs',  # 指定为挂载vePFS
-                mount_path=vepfs_mount_path,   # 指定将vePFS挂载到任务的路径
-                config=mlpsdk.ConfigForCreateJobInput(
-                    vepfs=mlpsdk.VepfsForCreateJobInput(
-                        id=vepfs_volume_id,  # 指定vePFS的id
-                        file_system_name=vepfs_name,  # 指定vePFS的名称
-                        sub_path=vepfs_prefix  # 将vePFS的指定目录挂载到任务中
+            storages=[
+                mlpsdk.StorageForCreateJobInput(
+                    type='Tos',  # 指定为挂载对象存储
+                    mount_path=tos_mount_path,   # 指定将对象存储挂载到任务的路径
+                    config=mlpsdk.ConfigForCreateJobInput(
+                        tos=mlpsdk.TosForCreateJobInput(
+                            bucket=tos_name,      # 指定对象存储名称
+                            prefix=tos_prefix # 将对象存储的指定目录挂载到任务中
+                        )
                     )
-                )
+                ),
+                mlpsdk.StorageForCreateJobInput(
+                    type='Vepfs',  # 指定为挂载vePFS
+                    mount_path=vepfs_mount_path,   # 指定将vePFS挂载到任务的路径
+                    config=mlpsdk.ConfigForCreateJobInput(
+                        vepfs=mlpsdk.VepfsForCreateJobInput(
+                            id=vepfs_volume_id,  # 指定vePFS的id
+                            file_system_name=vepfs_name,  # 指定vePFS的名称
+                            sub_path=vepfs_prefix  # 将vePFS的指定目录挂载到任务中
+                        )
+                    )
+                ),
+                # mlpsdk.StorageForCreateJobInput(
+                #     type='Vepfs',  # 指定为挂载vePFS（如需多个则写多个即可，如此）
+                #     mount_path='/data/vepfs/public', # 指定将vePFS挂载到任务的/data/vepfs/public路径下
+                #     config=mlpsdk.ConfigForCreateJobInput(
+                #         vepfs=mlpsdk.VepfsForCreateJobInput(
+                #             id=vepfs_volume_id,  # 指定vePFS的id
+                #             file_system_name=vepfs_name, # 指定vePFS的名称
+                #             sub_path='/public'  # 将vePFS的/public挂载到任务中/data/vepfs/public路径下
+                #         )
+                #     )
+                # )
+            ]
+        )
+    else:
+        storage_config=mlpsdk.StorageConfigForCreateJobInput(
+            credential=mlpsdk.ConvertCredentialForCreateJobInput(
+                access_key=config.ak,  # 对象存储所需的权限ak
+                secret_access_key=config.sk # 对象存储所需的权限sk
             ),
-            # mlpsdk.StorageForCreateJobInput(
-            #     type='Vepfs',  # 指定为挂载vePFS（如需多个则写多个即可，如此）
-            #     mount_path='/data/vepfs/public', # 指定将vePFS挂载到任务的/data/vepfs/public路径下
-            #     config=mlpsdk.ConfigForCreateJobInput(
-            #         vepfs=mlpsdk.VepfsForCreateJobInput(
-            #             id=vepfs_volume_id,  # 指定vePFS的id
-            #             file_system_name=vepfs_name, # 指定vePFS的名称
-            #             sub_path='/public'  # 将vePFS的/public挂载到任务中/data/vepfs/public路径下
-            #         )
-            #     )
-            # )
-        ]
-    )
+            storages=[
+                mlpsdk.StorageForCreateJobInput(
+                    type='Vepfs',  # 指定为挂载vePFS
+                    mount_path=vepfs_mount_path,   # 指定将vePFS挂载到任务的路径
+                    config=mlpsdk.ConfigForCreateJobInput(
+                        vepfs=mlpsdk.VepfsForCreateJobInput(
+                            id=vepfs_volume_id,  # 指定vePFS的id
+                            file_system_name=vepfs_name,  # 指定vePFS的名称
+                            sub_path=vepfs_prefix  # 将vePFS的指定目录挂载到任务中
+                        )
+                    )
+                ),
+                # mlpsdk.StorageForCreateJobInput(
+                #     type='Vepfs',  # 指定为挂载vePFS（如需多个则写多个即可，如此）
+                #     mount_path='/data/vepfs/public', # 指定将vePFS挂载到任务的/data/vepfs/public路径下
+                #     config=mlpsdk.ConfigForCreateJobInput(
+                #         vepfs=mlpsdk.VepfsForCreateJobInput(
+                #             id=vepfs_volume_id,  # 指定vePFS的id
+                #             file_system_name=vepfs_name, # 指定vePFS的名称
+                #             sub_path='/public'  # 将vePFS的/public挂载到任务中/data/vepfs/public路径下
+                #         )
+                #     )
+                # )
+            ]
+        )
     create_job_req = mlpsdk.CreateJobRequest(
         name=job_name,
         # 资源配置（队列、实例规格等）
