@@ -27,7 +27,7 @@ from isaacsim.asset.gen.omap.bindings import _omap  # 此文件不用, 但是别
 # 自定义工具
 from util.misc import load_usd_file
 from util.occupancy import get_mesh_paths, get_semantic_occupancy, save_semantic_occupancy_ply
-from util.random_path import gen_path
+from util.random_path_3d import gen_path_3d
 from util.camera import CameraRig
 from util.misc_no_isaacsim import get_pair_combinations
 
@@ -40,14 +40,15 @@ parser.add_argument("--camera_usd_url", type=str, default="/home/fufa/projects20
 parser.add_argument("--output_dir", type=str, default="/home/fufa/projects2026/DataGen_3dfm/workdir/3dfm/debug", help='输出目录')
 # 生成occupancy所需参数
 parser.add_argument("--occupancy_resolution", type=float, default=0.1, help='occupancy分辨率')
-# 生成路径所需参数
+# 生成3D路径所需参数
 parser.add_argument('--num_points', type=int, default=4, help='每条路径的路径点数量')
 parser.add_argument('--num_paths', type=int, default=1, help='要生成的路径数量')
-parser.add_argument('--max_angle_deviation', type=float, default=10.0, help='最大角度偏差度,限制前进方向在前方左N度和右N度之间')
-parser.add_argument('--erode_iterations', type=int, default=2, help='free positions边缘腐蚀迭代次数,越大过滤边缘越宽,设为0则不腐蚀')
-parser.add_argument('--filter_outdoor', action='store_true', default=True, help='是否过滤屋外的free positions(基于flood fill)')
-parser.add_argument('--no_filter_outdoor', action='store_true', help='禁用屋外过滤')
-parser.add_argument('--wall_dilate_iterations', type=int, default=2, help='墙壁膨胀迭代次数,用于填补门窗等间隙,越大则封闭效果越强')
+parser.add_argument('--max_angle_deviation', type=float, default=10.0, help='xy方向最大角度偏差(度),限制前进方向在前方左N度和右N度之间')
+parser.add_argument('--erode_iterations', type=int, default=2, help='free positions 3D腐蚀迭代次数,越大过滤边缘越宽,设为0则不腐蚀')
+parser.add_argument('--wall_dilate_iterations', type=int, default=2, help='墙壁 3D 膨胀迭代次数,用于填补门窗等间隙,越大则封闭效果越强')
+parser.add_argument('--step_size_xy', type=float, default=0.3, help='3D 路径 xy 方向每步最大步长(米)')
+parser.add_argument('--step_size_z', type=float, default=0.1, help='3D 路径 z 方向每步最大步长(米)')
+parser.add_argument('--max_dz_per_step', type=float, default=0.1, help='3D 路径相邻两点 z 方向最大变化(米)')
 
 # 匹配参数
 parser.add_argument("--occlusion_threshold", type=float, default=0.001, help="遮挡检测阈值(米), 空间两点欧式距离")
@@ -108,58 +109,48 @@ if __name__ == "__main__":
     save_occupancy_dir = os.path.join(args.output_dir, "occupancy")
     os.makedirs(save_occupancy_dir, exist_ok=True)
 
-    save_occupancy_npy_path = os.path.join(save_occupancy_dir, "semantic_occupancy.npy")
     save_occupancy_occupied_npy_path = os.path.join(save_occupancy_dir, "occupied_positions.npy")
     save_occupancy_free_npy_path = os.path.join(save_occupancy_dir, "free_positions.npy")
-    save_occupancy_ply_path = os.path.join(save_occupancy_dir, "semantic_occupancy.ply")
     save_occupancy_occupied_ply_path = os.path.join(save_occupancy_dir, "occupied_positions.ply")
     save_occupancy_free_ply_path = os.path.join(save_occupancy_dir, "free_positions.ply")
     
-    if not os.path.exists(save_occupancy_npy_path):
+    if not os.path.exists(save_occupancy_occupied_npy_path):
         semantic_occupancy = get_semantic_occupancy(stage, resolution=args.occupancy_resolution, mesh_paths=mesh_paths)
         occupied_data = semantic_occupancy[semantic_occupancy[:, 3] != 0]   # occupied positions
         free_data = semantic_occupancy[semantic_occupancy[:, 3] == 0]
         
         # save semantic_occupancy npy
-        np.save(save_occupancy_npy_path, semantic_occupancy)
         np.save(save_occupancy_occupied_npy_path, occupied_data)
         np.save(save_occupancy_free_npy_path, free_data)
 
         # save semantic_occupancy ply
-        save_semantic_occupancy_ply(semantic_occupancy, save_occupancy_ply_path)
         save_semantic_occupancy_ply(occupied_data, save_occupancy_occupied_ply_path)
         save_semantic_occupancy_ply(free_data, save_occupancy_free_ply_path)
     else:
-        semantic_occupancy = np.load(save_occupancy_npy_path)
         occupied_data = np.load(save_occupancy_occupied_npy_path)
         free_data = np.load(save_occupancy_free_npy_path)
 
-    logger.info(f"semantic_occupancy: {semantic_occupancy.shape}")
     logger.info(f"occupied_data: {occupied_data.shape}")
     logger.info(f"free_data: {free_data.shape}")
 
-    # ============ 步骤 3: 生成路径 ============
-    logger.info("步骤 3: 生成路径")
+    # ============ 步骤 3: 生成 3D 路径 ============
+    logger.info("步骤 3: 生成 3D 路径")
     output_path_dir = os.path.join(args.output_dir, "path")
     os.makedirs(output_path_dir, exist_ok=True)
-    paths_xyz = gen_path(
+    paths_xyz = gen_path_3d(
         free_position=free_data,
-        same_z_height=None,
-        z_value=None,
-        num_points=args.num_points,
-        num_paths=args.num_paths,
-        max_angle_deviation=args.max_angle_deviation,
-        z_tolerance=0.0001,
-        step_size=None,
-        output_path=os.path.join(output_path_dir, "paths.npy"),
-        visualize=True,
-        vis_scale=50.0,
-        min_image_size=2000,
-        erode_iterations=args.erode_iterations,
-        erode_resolution=args.occupancy_resolution,
         occupied_position=occupied_data,
-        filter_outdoor=args.filter_outdoor and not args.no_filter_outdoor,
+        output_dir=output_path_dir,
+        num_paths=args.num_paths,
+        num_points=args.num_points,
+        resolution=args.occupancy_resolution,
+        erode_iterations=args.erode_iterations,
         wall_dilate_iterations=args.wall_dilate_iterations,
+        step_size_xy=args.step_size_xy,
+        step_size_z=args.step_size_z,
+        max_angle_deviation=args.max_angle_deviation,
+        max_dz_per_step=args.max_dz_per_step,
+        save_filtered_ply=True,
     )
 
     # ============ 步骤 4: 相机 ============
