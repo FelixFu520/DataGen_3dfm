@@ -20,6 +20,7 @@ TASKS=(
   # taobao_AIUE_V01_002_zedx01_seed42_2000  # 已执行
   # taobao_AIUE_V01_004_zedx01_seed42_2000  # 已执行
   # taobao_AIUE_V01_005_zedx01_seed42_2000  # 已执行
+  # taobao_AIUE_V03_001_zedx01_seed42_2000  # 已执行
 )
 
 for task in "${TASKS[@]}"; do
