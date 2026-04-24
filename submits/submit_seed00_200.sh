@@ -4,41 +4,41 @@ SCRIPT_DIR="/root/vepfs/isaacsim/DataGen_3dfm/scripts/scripts_zedx01_seed00_200"
 TASKS=(
   # Intime_Home场景
   # intime_factory_000_zedx01_seed00_200 # OK
-  # intime_home_000_zedx01_seed00_200 # OK
-  # intime_home_001_zedx01_seed00_200 # OK
-  # intime_home_002_zedx01_seed00_200 # OK
-  # intime_home_003_zedx01_seed00_200 # OK
-  # intime_home_004_zedx01_seed00_200 # OK
-  # intime_home_005_zedx01_seed00_200 # OK
-  # intime_home_006_zedx01_seed00_200 # OK
-  # intime_home_007_zedx01_seed00_200 # OK
-  # intime_home_008_zedx01_seed00_200 # OK
-  # intime_home_009_zedx01_seed00_200 # OK
-  # intime_home_010_zedx01_seed00_200 # OK
+  # intime_home_000_zedx01_seed00_200    # OK
+  # intime_home_001_zedx01_seed00_200    # OK
+  # intime_home_002_zedx01_seed00_200    # OK
+  # intime_home_003_zedx01_seed00_200    # OK
+  # intime_home_004_zedx01_seed00_200    # OK
+  # intime_home_005_zedx01_seed00_200    # OK
+  # intime_home_006_zedx01_seed00_200    # OK
+  # intime_home_007_zedx01_seed00_200    # OK
+  # intime_home_008_zedx01_seed00_200    # OK
+  # intime_home_009_zedx01_seed00_200    # OK
+  # intime_home_010_zedx01_seed00_200    # OK
 
   # Taobao场景
-  # taobao_AI_vol33_scene_04_zedx01_seed00_200  # NO
-  # taobao_AIUE_V01_002_zedx01_seed00_200 # OK
-  # taobao_AIUE_V01_004_zedx01_seed00_200 # NO
-  # taobao_AIUE_V01_005_zedx01_seed00_200
-  # taobao_AIUE_V03_001_zedx01_seed00_200 # NO
-  # taobao_AIUE_V03_002_zedx01_seed00_200 # OK
+  # taobao_AI_vol33_scene_04_zedx01_seed00_200    # NO
+  # taobao_AIUE_V01_002_zedx01_seed00_200         # OK
+  # taobao_AIUE_V01_004_zedx01_seed00_200         # NO
+  # taobao_AIUE_V01_005_zedx01_seed00_200         # OK
+  # taobao_AIUE_V03_001_zedx01_seed00_200         # NO
+  # taobao_AIUE_V03_002_zedx01_seed00_200         # OK
   # taobao_ModularSwimmingPool_zedx01_seed00_200  # OK
-  # taobao_NewScandinavian_zedx01_seed00_200 # OK
-  # taobao_NightClub_zedx01_seed00_200  # OK
-  # taobao_OfficeMeetingRoom2_zedx01_seed00_200
-  # taobao_Old_Laboratory2_zedx01_seed00_200
-  # taobao_OutdoorFurniture_zedx01_seed00_200
-  # taobao_ParkingGarage_zedx01_seed00_200
-  # taobao_PostSovietFlat2_zedx01_seed00_200
-  # taobao_PostSovietKitchen_zedx01_seed00_200
-  # taobao_QAModularParking_zedx01_seed00_200
+  # taobao_NewScandinavian_zedx01_seed00_200      # OK
+  # taobao_NightClub_zedx01_seed00_200            # OK
+  # taobao_OfficeMeetingRoom2_zedx01_seed00_200   # OK
+  # taobao_Old_Laboratory2_zedx01_seed00_200      # OK
+  # taobao_OutdoorFurniture_zedx01_seed00_200     # OK
+  # taobao_ParkingGarage_zedx01_seed00_200        # OK
+  # taobao_PostSovietFlat2_zedx01_seed00_200      # OK
+  # taobao_PostSovietKitchen_zedx01_seed00_200    # OK
+  # taobao_QAModularParking_zedx01_seed00_200     # OK
   # taobao_QAOffice_zedx01_seed00_200
   # taobao_QAPolice_zedx01_seed00_200
   # taobao_ResearchCenter_zedx01_seed00_200
   # taobao_RetroOffice_zedx01_seed00_200
-  # taobao_SchoolGym_zedx01_seed00_200
-  # taobao_ShootingRange_zedx01_seed00_200
+  # taobao_SchoolGym_zedx01_seed00_200            # OK
+  # taobao_ShootingRange_zedx01_seed00_200        # OK
   # taobao_ShowRoom_zedx01_seed00_200
   # taobao_StylizedRoom_zedx01_seed00_200
   # taobao_UtopianCity_zedx01_seed00_200
