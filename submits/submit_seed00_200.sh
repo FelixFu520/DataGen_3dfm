@@ -17,32 +17,32 @@ TASKS=(
   # intime_home_010_zedx01_seed00_200
 
   # Taobao场景
-  # taobao_AI_vol33_scene_04_zedx01_seed00_2000  # 已 executed
-  # taobao_AIUE_V01_002_zedx01_seed00_2000  # 已执行
-  # taobao_AIUE_V01_004_zedx01_seed00_2000  # 已 executed
-  # taobao_AIUE_V01_005_zedx01_seed00_2000  # 已 executed
-  # taobao_AIUE_V03_001_zedx01_seed00_2000  # 已 executed
-  # taobao_AIUE_V03_002_zedx01_seed00_2000  # 已 executed
-  # taobao_ModularSwimmingPool_zedx01_seed00_2000  # 已 executed
-  # taobao_NewScandinavian_zedx01_seed00_2000  # 已 executed
-  # taobao_NightClub_zedx01_seed00_2000  # 已 executed
-  # taobao_OfficeMeetingRoom2_zedx01_seed00_2000  # 已 executed
-  # taobao_Old_Laboratory2_zedx01_seed00_2000  # 已 executed
-  # taobao_OutdoorFurniture_zedx01_seed00_2000 # 已 executed
-  # taobao_ParkingGarage_zedx01_seed00_2000 # 已 executed
-  # taobao_PostSovietFlat2_zedx01_seed00_2000 # 已 executed
-  # taobao_PostSovietKitchen_zedx01_seed00_2000 # 已 executed
-  # taobao_QAModularParking_zedx01_seed42_2000 # 已执行
-  # taobao_QAOffice_zedx01_seed00_2000 # 已 executed
-  # taobao_QAPolice_zedx01_seed00_2000  # 已 executed
-  # taobao_ResearchCenter_zedx01_seed00_2000 # 已 executed
-  # taobao_RetroOffice_zedx01_seed00_2000 # 已 executed
-  # taobao_SchoolGym_zedx01_seed00_2000 # 已 executed
-  # taobao_ShootingRange_zedx01_seed00_2000 # 已 executed
-  # taobao_ShowRoom_zedx01_seed00_2000 # 已 executed
-  # taobao_StylizedRoom_zedx01_seed00_2000 # 已 executed
-  # taobao_UtopianCity_zedx01_seed00_2000 # 已 executed
-  # taobao_VictorianLivingRoom_zedx01_seed00_2000 # 已 executed
+  # taobao_AI_vol33_scene_04_zedx01_seed00_200
+  # taobao_AIUE_V01_002_zedx01_seed00_200
+  # taobao_AIUE_V01_004_zedx01_seed00_200
+  # taobao_AIUE_V01_005_zedx01_seed00_200
+  # taobao_AIUE_V03_001_zedx01_seed00_200
+  # taobao_AIUE_V03_002_zedx01_seed00_200
+  # taobao_ModularSwimmingPool_zedx01_seed00_200
+  # taobao_NewScandinavian_zedx01_seed00_200
+  # taobao_NightClub_zedx01_seed00_200
+  # taobao_OfficeMeetingRoom2_zedx01_seed00_200
+  # taobao_Old_Laboratory2_zedx01_seed00_200
+  # taobao_OutdoorFurniture_zedx01_seed00_200
+  # taobao_ParkingGarage_zedx01_seed00_200
+  # taobao_PostSovietFlat2_zedx01_seed00_200
+  # taobao_PostSovietKitchen_zedx01_seed00_200
+  # taobao_QAModularParking_zedx01_seed00_200
+  # taobao_QAOffice_zedx01_seed00_200
+  # taobao_QAPolice_zedx01_seed00_200
+  # taobao_ResearchCenter_zedx01_seed00_200
+  # taobao_RetroOffice_zedx01_seed00_200
+  # taobao_SchoolGym_zedx01_seed00_200
+  # taobao_ShootingRange_zedx01_seed00_200
+  # taobao_ShowRoom_zedx01_seed00_200
+  # taobao_StylizedRoom_zedx01_seed00_200
+  # taobao_UtopianCity_zedx01_seed00_200
+  # taobao_VictorianLivingRoom_zedx01_seed00_200
 
   # TaoBao02场景
 )

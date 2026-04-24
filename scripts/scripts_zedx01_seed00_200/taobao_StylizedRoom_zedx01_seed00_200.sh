@@ -3,7 +3,7 @@ CAMERA_USD_URL=/root/vepfs/isaacsim/DataGen_3dfm/assets/zedx01.usd
 OUTPUT_DIR=/root/vepfs/isaacsim/workdir/3dfm_zedx01_seed00_200/taobao_StylizedRoom_zedx01_seed00_200
 OCCUPANCY_RESOLUTION=0.1
 NUM_POINTS=100
-NUM_PATHS=20
+NUM_PATHS=2
 MAX_ANGLE_DEVIATION=10.0
 ERODE_ITERATIONS=2
 OBSTACLE_DILATE_ITERATIONS=2
@@ -37,6 +37,6 @@ ln -s /root/vepfs/isaacsim/5.1_asset /root/5.1_asset
 
 # 可视化数据
 ./app/python.sh show_data.py \
---data_dir /root/vepfs/isaacsim/workdir/3dfm_zedx01_seed00_200/taobao_StylizedRoom_zedx01_seed00_200 \
---save_dir /root/vepfs/isaacsim/workdir/3dfm_zedx01_seed00_200/taobao_StylizedRoom_zedx01_seed00_200/vis \
+--data_dir $OUTPUT_DIR \
+--save_dir $OUTPUT_DIR/vis \
 --show_num 4
