@@ -1,8 +1,9 @@
-SCRIPT_DIR="/root/vepfs/isaacsim/DataGen_3dfm/scripts_zedx01_seed00_200"
+SCRIPT_DIR="/root/vepfs/isaacsim/DataGen_3dfm/scripts/scripts_zedx01_seed00_200"
 
 # 每项为 task_name，对应脚本为 ${SCRIPT_DIR}/${task}.sh
 TASKS=(
   # Intime_Home场景
+  intime_factory_000_zedx01_seed00_200
   # intime_home_000_zedx01_seed00_200
   # intime_home_001_zedx01_seed00_200
   # intime_home_002_zedx01_seed00_200
@@ -45,6 +46,9 @@ TASKS=(
 
   # TaoBao02场景
 )
+
+# 切换到脚本目录
+cd "$(dirname "$0")/.."
 
 for task in "${TASKS[@]}"; do
   python submit_volcengine.py --ak "${VOLC_AK}" --sk "${VOLC_SK}" --private_image_password "${VOLC_PASSWD}" \
