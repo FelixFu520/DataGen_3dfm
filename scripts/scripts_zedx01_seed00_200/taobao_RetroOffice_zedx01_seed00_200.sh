@@ -1,4 +1,4 @@
-SCENE_USD_URL=/root/vepfs/isaacsim/DataGen_3dfm/asset_extern/TaoBao/RetroOffice/Demonstation.usd
+SCENE_USD_URL=/root/vepfs/isaacsim/DataGen_3dfm/asset_extern/TaoBao/RetroOffice/Demonstation2.usd
 CAMERA_USD_URL=/root/vepfs/isaacsim/DataGen_3dfm/assets/zedx01.usd
 OUTPUT_DIR=/root/vepfs/isaacsim/workdir/3dfm_zedx01_seed00_200/taobao_RetroOffice_zedx01_seed00_200
 OCCUPANCY_RESOLUTION=0.1

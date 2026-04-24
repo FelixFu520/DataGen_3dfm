@@ -33,8 +33,8 @@ TASKS=(
   # taobao_PostSovietFlat2_zedx01_seed00_200      # OK
   # taobao_PostSovietKitchen_zedx01_seed00_200    # OK
   # taobao_QAModularParking_zedx01_seed00_200     # OK
-  # taobao_QAOffice_zedx01_seed00_200
-  # taobao_QAPolice_zedx01_seed00_200
+  # taobao_QAOffice_zedx01_seed00_200             # OK
+  # taobao_QAPolice_zedx01_seed00_200             # OK
   # taobao_ResearchCenter_zedx01_seed00_200
   # taobao_RetroOffice_zedx01_seed00_200
   # taobao_SchoolGym_zedx01_seed00_200            # OK
