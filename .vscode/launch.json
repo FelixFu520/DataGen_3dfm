@@ -17,9 +17,9 @@
             "envFile": "${workspaceFolder}/.vscode/.standalone_examples.env",
             "preLaunchTask": "setup_python_env",
             "args": [
-                "--scene_usd_url", "/root/vepfs/isaacsim/DataGen_3dfm/asset_extern/Intime_Home/home_000/interior_template.usdc",
-                "--camera_usd_url", "/root/vepfs/isaacsim/DataGen_3dfm/assets/zedx01.usd",
-                "--output_dir", "/root/vepfs/isaacsim/DataGen_3dfm/workdir/3dfm_zedx01_seed00_2000/home000_zedx01_seed00_2000",
+                "--scene_usd_url", "/home/fufa/projects2026/DataGen_3dfm/asset_extern/TaoBao/ModularSwimmingPool/ChangingRoom_Female.usd",
+                "--camera_usd_url", "/home/fufa/projects2026/DataGen_3dfm/assets/zedx01.usd",
+                "--output_dir", "/home/fufa/projects2026/DataGen_3dfm/workdir/3dfm/ModularSwimmingPool",
                 "--occupancy_resolution", "0.1",
                 "--num_points", "100",
                 "--num_paths", "2",
