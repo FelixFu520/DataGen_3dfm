@@ -3,7 +3,7 @@ SCRIPT_DIR="/root/vepfs/isaacsim/DataGen_3dfm/scripts/scripts_zedx01_seed00_200"
 # 每项为 task_name，对应脚本为 ${SCRIPT_DIR}/${task}.sh
 TASKS=(
   # Intime_Home场景
-  intime_factory_000_zedx01_seed00_200
+  # intime_factory_000_zedx01_seed00_200
   # intime_home_000_zedx01_seed00_200
   # intime_home_001_zedx01_seed00_200
   # intime_home_002_zedx01_seed00_200
