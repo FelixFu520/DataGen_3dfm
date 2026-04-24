@@ -39,7 +39,7 @@ TASKS=(
   # taobao_RetroOffice_zedx01_seed00_200
   # taobao_SchoolGym_zedx01_seed00_200            # OK
   # taobao_ShootingRange_zedx01_seed00_200        # OK
-  # taobao_ShowRoom_zedx01_seed00_200
+  # taobao_ShowRoom_zedx01_seed00_200             # OK
   # taobao_StylizedRoom_zedx01_seed00_200
   # taobao_UtopianCity_zedx01_seed00_200
   # taobao_VictorianLivingRoom_zedx01_seed00_200
