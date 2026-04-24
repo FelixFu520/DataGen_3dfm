@@ -17,15 +17,15 @@ TASKS=(
   # intime_home_010_zedx01_seed00_200 # OK
 
   # Taobao场景
-  # taobao_AI_vol33_scene_04_zedx01_seed00_200
+  # taobao_AI_vol33_scene_04_zedx01_seed00_200  # NO
   # taobao_AIUE_V01_002_zedx01_seed00_200 # OK
-  # taobao_AIUE_V01_004_zedx01_seed00_200
+  # taobao_AIUE_V01_004_zedx01_seed00_200 # NO
   # taobao_AIUE_V01_005_zedx01_seed00_200
-  # taobao_AIUE_V03_001_zedx01_seed00_200
-  # taobao_AIUE_V03_002_zedx01_seed00_200
-  # taobao_ModularSwimmingPool_zedx01_seed00_200
-  # taobao_NewScandinavian_zedx01_seed00_200
-  # taobao_NightClub_zedx01_seed00_200
+  # taobao_AIUE_V03_001_zedx01_seed00_200 # NO
+  # taobao_AIUE_V03_002_zedx01_seed00_200 # OK
+  # taobao_ModularSwimmingPool_zedx01_seed00_200  # OK
+  # taobao_NewScandinavian_zedx01_seed00_200 # OK
+  # taobao_NightClub_zedx01_seed00_200  # OK
   # taobao_OfficeMeetingRoom2_zedx01_seed00_200
   # taobao_Old_Laboratory2_zedx01_seed00_200
   # taobao_OutdoorFurniture_zedx01_seed00_200
