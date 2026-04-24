@@ -267,6 +267,18 @@ def filter_free_by_obstacle_envelope(
         f"(移除 {len(free_xyz3) - len(filtered)} 个落在外接 shape 外的点, "
         f"envelope_iterations={obstacle_envelope_iterations})"
     )
+
+    # 安全回退: 场景若未完全封闭 (例如缺天花板/缺某面墙), binary_fill_holes
+    # 会从 padding 背景"灌气"进入内部, envelope 最终近似等于原始 occ_mask,
+    # 导致所有 free 点都被剔除。此时直接返回过滤前的结果, 避免下游空点集。
+    if len(filtered) == 0:
+        logger.warning(
+            "3D 障碍外接 shape 过滤后点数为 0, 判断场景未被完全封闭(可能缺天花板"
+            "/外墙, 或 envelope_iterations 过小无法封住开口)。已自动跳过此步过滤, "
+            "使用上一步结果继续; 如需启用该过滤, 可增大 --obstacle_envelope_iterations"
+        )
+        return free_xyz3
+
     return filtered
 
 
