@@ -1,22 +1,41 @@
-cd "$(dirname "$0")/.."
+SCENE_USD_URL=/root/vepfs/isaacsim/DataGen_3dfm/asset_extern/TaoBao/NightClub/NightClubDemo.usd
+CAMERA_USD_URL=/root/vepfs/isaacsim/DataGen_3dfm/assets/zedx01.usd
+OUTPUT_DIR=/root/vepfs/isaacsim/workdir/3dfm_zedx01_seed00_200/taobao_NightClub_zedx01_seed00_200
+OCCUPANCY_RESOLUTION=0.5
+NUM_POINTS=100
+NUM_PATHS=20
+MAX_ANGLE_DEVIATION=10.0
+ERODE_ITERATIONS=2
+OBSTACLE_DILATE_ITERATIONS=2
+OBSTACLE_ENVELOPE_ITERATIONS=1
+STEP_SIZE_XY=0.3
+STEP_SIZE_Z=0.1
+MAX_DZ_PER_STEP=0.1
 
-# 场景是个酒吧， 所有物体设置了碰撞属性，因此场景大
+# 切换到脚本目录
+cd "$(dirname "$0")/../.."
+
+# 创建软链接，让isaacsim可以识别到资产
+ln -s /root/vepfs/isaacsim/5.1_asset /root/5.1_asset
+
+# 生成数据
 ./app/python.sh gen_data.py \
 --seed 0 \
---scene_usd_url /root/vepfs/isaacsim/DataGen_3dfm/asset_extern/TaoBao/NightClub/NightClubDemo.usd \
---camera_usd_url /root/vepfs/isaacsim/DataGen_3dfm/assets/zedx01.usd \
---output_dir /root/vepfs/isaacsim/workdir/3dfm_zedx01_seed00_200/taobao_NightClub_zedx01_seed00_200 \
---occupancy_resolution 0.5 \
---num_points 100 \
---num_paths 20 \
---max_angle_deviation 10.0 \
---erode_iterations 2 \
---obstacle_dilate_iterations 2 \
---obstacle_envelope_iterations 1 \
---step_size_xy 0.3 \
---step_size_z 0.1 \
---max_dz_per_step 0.1
+--scene_usd_url $SCENE_USD_URL \
+--camera_usd_url $CAMERA_USD_URL \
+--output_dir $OUTPUT_DIR \
+--occupancy_resolution $OCCUPANCY_RESOLUTION \
+--num_points $NUM_POINTS \
+--num_paths $NUM_PATHS \
+--max_angle_deviation $MAX_ANGLE_DEVIATION \
+--erode_iterations $ERODE_ITERATIONS \
+--obstacle_dilate_iterations $OBSTACLE_DILATE_ITERATIONS \
+--obstacle_envelope_iterations $OBSTACLE_ENVELOPE_ITERATIONS \
+--step_size_xy $STEP_SIZE_XY \
+--step_size_z $STEP_SIZE_Z \
+--max_dz_per_step $MAX_DZ_PER_STEP
 
+# 可视化数据
 ./app/python.sh show_data.py \
 --data_dir /root/vepfs/isaacsim/workdir/3dfm_zedx01_seed00_200/taobao_NightClub_zedx01_seed00_200 \
 --save_dir /root/vepfs/isaacsim/workdir/3dfm_zedx01_seed00_200/taobao_NightClub_zedx01_seed00_200/vis \
