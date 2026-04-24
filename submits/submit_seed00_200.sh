@@ -17,11 +17,11 @@ TASKS=(
   # intime_home_010_zedx01_seed00_200    # OK
 
   # Taobao场景
-  # taobao_AI_vol33_scene_04_zedx01_seed00_200    # NO
+  taobao_AI_vol33_scene_04_zedx01_seed00_200    # NO
   # taobao_AIUE_V01_002_zedx01_seed00_200         # OK
-  # taobao_AIUE_V01_004_zedx01_seed00_200         # NO
+  taobao_AIUE_V01_004_zedx01_seed00_200         # NO
   # taobao_AIUE_V01_005_zedx01_seed00_200         # OK
-  # taobao_AIUE_V03_001_zedx01_seed00_200         # NO
+  taobao_AIUE_V03_001_zedx01_seed00_200         # NO
   # taobao_AIUE_V03_002_zedx01_seed00_200         # OK
   # taobao_ModularSwimmingPool_zedx01_seed00_200  # OK
   # taobao_NewScandinavian_zedx01_seed00_200      # OK
@@ -36,15 +36,30 @@ TASKS=(
   # taobao_QAOffice_zedx01_seed00_200             # OK
   # taobao_QAPolice_zedx01_seed00_200             # OK
   # taobao_ResearchCenter_zedx01_seed00_200
-  # taobao_RetroOffice_zedx01_seed00_200
+  # taobao_RetroOffice_zedx01_seed00_200          # OK
   # taobao_SchoolGym_zedx01_seed00_200            # OK
   # taobao_ShootingRange_zedx01_seed00_200        # OK
   # taobao_ShowRoom_zedx01_seed00_200             # OK
-  # taobao_StylizedRoom_zedx01_seed00_200
+  # taobao_StylizedRoom_zedx01_seed00_200         # OK
   # taobao_UtopianCity_zedx01_seed00_200
-  # taobao_VictorianLivingRoom_zedx01_seed00_200
+  # taobao_VictorianLivingRoom_zedx01_seed00_200  # OK
 
   # TaoBao02场景
+  taobao02_AI_vol3_scene_01_zedx01_seed00_200
+  taobao02_AI_vol3_scene_03_zedx01_seed00_200
+  taobao02_AI_vol3_scene_04_zedx01_seed00_200
+  taobao02_AI_vol4_01_zedx01_seed00_200
+  taobao02_AI_vol4_02_zedx01_seed00_200
+  taobao02_AI_vol4_03_zedx01_seed00_200
+  taobao02_AI_vol4_04_zedx01_seed00_200
+  taobao02_AI_vol4_05_zedx01_seed00_200
+  taobao02_AIUE_V01_001_zedx01_seed00_200
+  taobao02_AIUE_V01_003_zedx01_seed00_200
+  taobao02_AIUE_V02_001_zedx01_seed00_200
+  taobao02_AIUE_V02_002_zedx01_seed00_200
+  taobao02_AIUE_V02_003_zedx01_seed00_200
+  taobao02_B110_House_Furniture_zedx01_seed00_200
+
 )
 
 # 切换到脚本目录

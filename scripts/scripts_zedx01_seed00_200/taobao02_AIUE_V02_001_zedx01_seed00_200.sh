@@ -1,13 +1,13 @@
-SCENE_USD_URL=/root/vepfs/isaacsim/DataGen_3dfm/asset_extern/TaoBao/VictorianLivingRoom/DemoScene.usd
+SCENE_USD_URL=/root/vepfs/isaacsim/DataGen_3dfm/asset_extern/TaoBao02/AIUE_V02_001/AIUE_V02_001_2.usd
 CAMERA_USD_URL=/root/vepfs/isaacsim/DataGen_3dfm/assets/zedx01.usd
-OUTPUT_DIR=/root/vepfs/isaacsim/workdir/3dfm_zedx01_seed00_200/taobao_VictorianLivingRoom_zedx01_seed00_200
+OUTPUT_DIR=/root/vepfs/isaacsim/workdir/3dfm_zedx01_seed00_200/taobao_AIUE_V02_001_zedx01_seed00_200
 OCCUPANCY_RESOLUTION=0.25
 NUM_POINTS=10
 NUM_PATHS=20
 MAX_ANGLE_DEVIATION=10.0
 ERODE_ITERATIONS=1
 OBSTACLE_DILATE_ITERATIONS=1
-OBSTACLE_ENVELOPE_ITERATIONS=4
+OBSTACLE_ENVELOPE_ITERATIONS=8
 STEP_SIZE_XY=0.3
 STEP_SIZE_Z=0.1
 MAX_DZ_PER_STEP=0.1
