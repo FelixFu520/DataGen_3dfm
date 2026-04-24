@@ -5,8 +5,9 @@
   2. 3D 腐蚀 free_xyz（向内收缩 M 层），让 free 点远离自身连通区域的边界
   3. 3D 膨胀 occupied_xyz 得到"障碍禁区"，再把落在禁区内的 free 点剔除，
      让 free 点离所有障碍物至少 N 个体素（防贴墙/穿模）
-  4. 3D 大膨胀 occupied_xyz 得到"活动包络体", 只保留落在包络内的 free 点,
-     让 free 点离某个障碍物最多 K 个体素（防飞在半空 / 脱离场景主体）
+  4. 对 occupied_xyz 做"闭运算 + 3D 孔洞填充"得到整体外接 shape,
+     只保留落在该外接 shape 内部的 free 点（房间中心等"远离墙但仍在场景
+     主体内部"的点会被正确保留, 天空/远离建筑的旷野点会被剔除）
      —— 仅当 obstacle_envelope_iterations > 0 时启用
   5. 在过滤后的 free 点中随机选起点，xy 方向保持 max_angle_deviation 平滑、
      z 方向用 max_dz_per_step 限制，按 step_size 做 3D 随机游走生成轨迹
@@ -20,7 +21,7 @@ from loguru import logger
 from typing import List, Optional, Tuple
 
 from plyfile import PlyData, PlyElement
-from scipy.ndimage import binary_erosion, binary_dilation
+from scipy.ndimage import binary_erosion, binary_dilation, binary_fill_holes
 
 
 # ============================================================
@@ -175,7 +176,7 @@ def filter_free_by_obstacle_dilation(
 
 
 # ============================================================
-# 3D 大膨胀障碍物得到"活动包络体"，仅保留落在包络内的 free 点（室外尤为重要）
+# 取 occupied_xyz 整体外接 shape, 仅保留落在外接 shape 内部的 free 点
 # ============================================================
 def filter_free_by_obstacle_envelope(
     free_xyz: np.ndarray,
@@ -184,22 +185,39 @@ def filter_free_by_obstacle_envelope(
     obstacle_envelope_iterations: int,
 ) -> np.ndarray:
     """
-    把 occupied_xyz 做"大膨胀"形成一个包络体 B, 只保留落在 B 内部的 free 点。
-    几何含义: 让 free 点离任意 occupied 物体最多
-    `obstacle_envelope_iterations` 个体素 (即 N * resolution 米) 以内, 从而
-    把"飞在空中远离场景主体"的点剔除掉。
+    把 occupied_xyz 栅格化后, 通过 "闭运算 + 3D 孔洞填充" 得到整个障碍集合
+    的**外接 shape**(贴合墙/地板/天花板的整体外壳, 内部空腔视为 shape 内部),
+    只保留落在该外接 shape 内的 free 点。
 
-    典型用途:
-      - 室外场景中, free_xyz 会包含"山顶上方几十米的空气", 这些点应被剔除;
-      - 室内场景中, 通常所有房间尺寸都小于 N * resolution, 因此几乎不会有
-        free 点被这一步剔除, 这一步相当于 no-op, 安全。
+    与"逐体素膨胀"的关键区别:
+      - 不是让 free 点"离某个障碍最多 N 体素";
+      - 而是把整个障碍集合封闭起来形成一个**整体外壳**, 外壳内部(包括房间
+        中心、走廊中心这种离墙壁很远的位置)全部保留, 外壳之外(天空/远离
+        建筑的旷野)才被剔除。
+
+    算法步骤:
+      1) 将 occupied_xyz 写入 3D 体素网格得到 `occ_mask`;
+      2) 对 `occ_mask` 做 `obstacle_envelope_iterations` 次膨胀, 把墙缝/
+         窗洞/小开口连成封闭边界 -> `closed`;
+      3) `binary_fill_holes(closed)` 填充所有被 `closed` 完全包围的内部空腔
+         (房间/走廊), 得到整体外接 shape `envelope`;
+         对没有完全封闭的场景(例如户外缺顶), 填充不会越过开口, 所以外壳
+         依然紧贴障碍分布, 不会误扩到无关的天空区域;
+      4) 再做 `obstacle_envelope_iterations` 次腐蚀, 抵消第 2 步的人为扩张,
+         让外壳尺寸贴近原始障碍边界;
+      5) 保留落在 `envelope` 内的 free 点。
+
+    参数语义:
+      `obstacle_envelope_iterations` 控制 "闭运算" 的膨胀层数:
+        - 太小 (0 或 1): 墙缝/窗户会让孔洞填充"漏气", 房间内部无法被封闭;
+        - 适中 (2~5 一般足够): 可将小开口封上, 房间/走廊作为内部空腔被填充;
+        - 设为 0 时关闭此过滤(直接返回 free_xyz), 与旧版行为一致.
 
     Args:
-        free_xyz:                      (N, 3) 或 (N, 4)
-        occupied_xyz:                  (M, 3) 或 (M, 4), 作为包络种子
-        resolution:                    与 occupancy 分辨率一致
-        obstacle_envelope_iterations:  包络膨胀迭代次数;
-                                       <=0 表示关闭此过滤 (直接返回 free_xyz)
+        free_xyz:                     (N, 3) 或 (N, 4)
+        occupied_xyz:                 (M, 3) 或 (M, 4), 用于构建外接 shape
+        resolution:                   与 occupancy 分辨率一致
+        obstacle_envelope_iterations: 闭运算膨胀层数, <=0 关闭此过滤
     Returns:
         (K, 3) 过滤后的 free 点
     """
@@ -208,33 +226,46 @@ def filter_free_by_obstacle_envelope(
 
     free_xyz3 = free_xyz[:, :3]
 
-    # 关闭或无障碍可用 -> 直接返回（不做任何裁剪）
     if obstacle_envelope_iterations <= 0 or len(occupied_xyz) == 0:
         return free_xyz3
 
     occupied_xyz3 = occupied_xyz[:, :3]
     all_xyz = np.vstack([free_xyz3, occupied_xyz3])
-    padding = max(2, obstacle_envelope_iterations + 1)
+    # padding 要大于膨胀次数, 保证膨胀不会撞到网格边界; 同时 fill_holes 从
+    # 网格外围向内灌"背景", 足够的 padding 才能让背景真正包住外壳
+    padding = max(3, obstacle_envelope_iterations + 2)
     grid = VoxelGrid3D.from_points(all_xyz, resolution, padding=padding)
     nx, ny, nz = grid.shape
 
-    envelope = np.zeros((nx, ny, nz), dtype=bool)
+    occ_mask = np.zeros((nx, ny, nz), dtype=bool)
     occ_idx = grid.clip_index(grid.world_to_index(occupied_xyz3))
-    envelope[occ_idx[:, 0], occ_idx[:, 1], occ_idx[:, 2]] = True
+    occ_mask[occ_idx[:, 0], occ_idx[:, 1], occ_idx[:, 2]] = True
 
     struct_full = np.ones((3, 3, 3), dtype=bool)
-    envelope = binary_dilation(
+
+    # 1) 闭运算膨胀: 把墙缝 / 小开口连起来, 构成封闭边界
+    closed = binary_dilation(
+        occ_mask, structure=struct_full, iterations=obstacle_envelope_iterations
+    )
+
+    # 2) 3D 孔洞填充: 把被边界完全包围的内部空腔 (房间/走廊) 纳入 shape
+    envelope = binary_fill_holes(closed, structure=struct_full)
+
+    # 3) 腐蚀回去: 抵消第 1 步的人为扩张, 让 shape 更贴合原始障碍
+    envelope = binary_erosion(
         envelope, structure=struct_full, iterations=obstacle_envelope_iterations
     )
+    # 腐蚀不能把原始障碍本身"吃掉", 所以把 occ_mask 并回来, 保证障碍体素
+    # 始终在 shape 内 (避免贴墙的 free 点被误删)
+    envelope |= occ_mask
 
     free_idx = grid.clip_index(grid.world_to_index(free_xyz3))
     in_envelope = envelope[free_idx[:, 0], free_idx[:, 1], free_idx[:, 2]]
     filtered = free_xyz3[in_envelope]
     logger.info(
-        f"3D 障碍包络过滤: {len(free_xyz3)} -> {len(filtered)} 点 "
-        f"(移除 {len(free_xyz3) - len(filtered)} 个远离障碍的点, "
-        f"obstacle_envelope={obstacle_envelope_iterations}, "
-        f"约 {obstacle_envelope_iterations * resolution:.2f} 米)"
+        f"3D 障碍外接 shape 过滤: {len(free_xyz3)} -> {len(filtered)} 点 "
+        f"(移除 {len(free_xyz3) - len(filtered)} 个落在外接 shape 外的点, "
+        f"envelope_iterations={obstacle_envelope_iterations})"
     )
     return filtered
 
@@ -709,8 +740,9 @@ def gen_path_3d(
       1) 3D 腐蚀 free_position, 让 free 点远离自身连通边界
       2) 3D 膨胀 occupied_position 得到"障碍禁区", 剔除落在禁区内的 free 点
          (防贴墙/穿模; obstacle_dilate_iterations)
-      3) 3D 大膨胀 occupied_position 得到"活动包络体", 仅保留落在包络内
-         的 free 点 (防飞在半空; obstacle_envelope_iterations, <=0 则关闭)
+      3) 取 occupied_position 的整体外接 shape (闭运算 + 3D 孔洞填充),
+         仅保留落在外接 shape 内部的 free 点 (房间中心会被保留, 天空/旷野
+         会被剔除; obstacle_envelope_iterations 为闭运算的膨胀层数, <=0 关闭)
       4) 在过滤后的点云上做 3D 随机游走
       5) 输出 paths.npy、filtered_free_positions.ply（可选）、以及每条路径 {idx:04d}.ply
 

@@ -46,7 +46,7 @@ parser.add_argument('--num_paths', type=int, default=1, help='要生成的路径
 parser.add_argument('--max_angle_deviation', type=float, default=10.0, help='xy方向最大角度偏差(度),限制前进方向在前方左N度和右N度之间')
 parser.add_argument('--erode_iterations', type=int, default=2, help='free positions 3D腐蚀迭代次数,越大过滤边缘越宽,设为0则不腐蚀')
 parser.add_argument('--obstacle_dilate_iterations', type=int, default=2, help='occupied 障碍 3D 膨胀迭代次数(禁区),越大则 free 点离障碍越远(室内室外通用)')
-parser.add_argument('--obstacle_envelope_iterations', type=int, default=0, help='occupied 障碍 3D 大膨胀迭代次数(活动包络体),仅保留落在包络内的 free 点,防止 free 点飞在半空/远离场景主体;设为0则关闭此过滤(室外场景建议开启)')
+parser.add_argument('--obstacle_envelope_iterations', type=int, default=0, help='取 occupied 障碍的整体外接 shape(闭运算+3D 孔洞填充)的闭运算膨胀层数,仅保留落在外接 shape 内部的 free 点(房间中心会保留,天空/旷野会剔除);设为0关闭此过滤,一般 2~5 即可封住墙缝/小开口')
 parser.add_argument('--step_size_xy', type=float, default=0.3, help='3D 路径 xy 方向每步最大步长(米)')
 parser.add_argument('--step_size_z', type=float, default=0.1, help='3D 路径 z 方向每步最大步长(米)')
 parser.add_argument('--max_dz_per_step', type=float, default=0.1, help='3D 路径相邻两点 z 方向最大变化(米)')
