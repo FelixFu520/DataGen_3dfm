@@ -13,7 +13,7 @@ STEP_SIZE_Z=0.1
 MAX_DZ_PER_STEP=0.1
 
 # 切换到脚本目录
-cd "$(dirname "$0")/.."
+cd "$(dirname "$0")/../.."
 
 # 创建软链接，让isaacsim可以识别到资产
 ln -s /root/vepfs/isaacsim/5.1_asset /root/5.1_asset
