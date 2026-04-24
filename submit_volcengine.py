@@ -207,7 +207,7 @@ if __name__ == "__main__":
     parser.add_argument("--vepfs_volume_id", type=str, default="vepfs-cnbj18d820ed29da")
     parser.add_argument("--vepfs_mount_path", type=str, default="/root/vepfs")
     parser.add_argument("--vepfs_prefix", type=str, default="/fa.fu")
-    parser.add_argument("--image_url", type=str, default="d-robotics-image-dev-cn-beijing.cr.volces.com/isaacsim/isaacsim5.1:cuda12.8.1")
+    parser.add_argument("--image_url", type=str, default="d-robotics-image-dev-cn-beijing.cr.volces.com/isaacsim/isaacsim5.1v4:cuda12.8.1")
     parser.add_argument("--private_image_username", type=str, default="D-Robotics@2108796092")
     parser.add_argument("--private_image_password", type=str, default="*****yourpassword*****")
     parser.add_argument("--ak", type=str, default="AKLTMDljNmNhNmFkYTM1NGUxNzkxZWIxM*********")

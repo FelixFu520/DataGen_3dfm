@@ -139,5 +139,6 @@ apt-get update && apt-get install -y libgl1 libxt6 libxml2 libxrandr2 libxineram
 ```
 ### 提交任务
 ```
+pip install volcengine-python-sdk
 bash submit.sh
 ```

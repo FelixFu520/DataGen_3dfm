@@ -1,5 +1,3 @@
-cd "$(dirname "$0")/.."
-
 SCENE_USD_URL=/root/vepfs/isaacsim/DataGen_3dfm/asset_extern/Intime_Home/home_000/interior_template.usdc
 CAMERA_USD_URL=/root/vepfs/isaacsim/DataGen_3dfm/assets/zedx01.usd
 OUTPUT_DIR=/root/vepfs/isaacsim/workdir/3dfm_zedx01_seed00_200/home000_zedx01_seed00_200
@@ -14,6 +12,13 @@ STEP_SIZE_XY=0.3
 STEP_SIZE_Z=0.1
 MAX_DZ_PER_STEP=0.1
 
+# 切换到脚本目录
+cd "$(dirname "$0")/.."
+
+# 创建软链接，让isaacsim可以识别到资产
+ln -s /root/vepfs/isaacsim/5.1_asset /root/5.1_asset
+
+# 生成数据
 ./app/python.sh gen_data.py \
 --seed 0 \
 --scene_usd_url $SCENE_USD_URL \
@@ -30,6 +35,7 @@ MAX_DZ_PER_STEP=0.1
 --step_size_z $STEP_SIZE_Z \
 --max_dz_per_step $MAX_DZ_PER_STEP
 
+# 可视化数据
 ./app/python.sh show_data.py \
 --data_dir $OUTPUT_DIR \
 --save_dir $OUTPUT_DIR/vis \
