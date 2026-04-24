@@ -1,12 +1,12 @@
-SCENE_USD_URL=/root/vepfs/isaacsim/DataGen_3dfm/asset_extern/Intime_Home/factory_000/factory.usdc
+SCENE_USD_URL=/root/vepfs/isaacsim/DataGen_3dfm/asset_extern/Intime_Home/factory000/factory.usdc
 CAMERA_USD_URL=/root/vepfs/isaacsim/DataGen_3dfm/assets/zedx01.usd
 OUTPUT_DIR=/root/vepfs/isaacsim/workdir/3dfm_zedx01_seed00_200/factory000_zedx01_seed00_200
-OCCUPANCY_RESOLUTION=0.5
+OCCUPANCY_RESOLUTION=0.25
 NUM_POINTS=100
 NUM_PATHS=2
 MAX_ANGLE_DEVIATION=10.0
-ERODE_ITERATIONS=2
-OBSTACLE_DILATE_ITERATIONS=3
+ERODE_ITERATIONS=1
+OBSTACLE_DILATE_ITERATIONS=1
 OBSTACLE_ENVELOPE_ITERATIONS=0
 STEP_SIZE_XY=0.3
 STEP_SIZE_Z=0.1
