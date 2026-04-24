@@ -1,7 +1,7 @@
 SCENE_USD_URL=/root/vepfs/isaacsim/DataGen_3dfm/asset_extern/TaoBao/AI_vol33_scene_04/AI_vol3_scene_04.usd
 CAMERA_USD_URL=/root/vepfs/isaacsim/DataGen_3dfm/assets/zedx01.usd
 OUTPUT_DIR=/root/vepfs/isaacsim/workdir/3dfm_zedx01_seed00_200/taobao_AI_vol33_scene_04_zedx01_seed00_200
-OCCUPANCY_RESOLUTION=0.1
+OCCUPANCY_RESOLUTION=0.5
 NUM_POINTS=100
 NUM_PATHS=2
 MAX_ANGLE_DEVIATION=10.0

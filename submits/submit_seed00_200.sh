@@ -3,22 +3,22 @@ SCRIPT_DIR="/root/vepfs/isaacsim/DataGen_3dfm/scripts/scripts_zedx01_seed00_200"
 # 每项为 task_name，对应脚本为 ${SCRIPT_DIR}/${task}.sh
 TASKS=(
   # Intime_Home场景
-  # intime_factory_000_zedx01_seed00_200
-  # intime_home_000_zedx01_seed00_200
-  # intime_home_001_zedx01_seed00_200
-  # intime_home_002_zedx01_seed00_200
-  # intime_home_003_zedx01_seed00_200
-  # intime_home_004_zedx01_seed00_200
-  # intime_home_005_zedx01_seed00_200
-  # intime_home_006_zedx01_seed00_200
-  # intime_home_007_zedx01_seed00_200
-  # intime_home_008_zedx01_seed00_200
-  # intime_home_009_zedx01_seed00_200
-  # intime_home_010_zedx01_seed00_200
+  # intime_factory_000_zedx01_seed00_200 # OK
+  # intime_home_000_zedx01_seed00_200 # OK
+  # intime_home_001_zedx01_seed00_200 # OK
+  # intime_home_002_zedx01_seed00_200 # OK
+  # intime_home_003_zedx01_seed00_200 # OK
+  # intime_home_004_zedx01_seed00_200 # OK
+  # intime_home_005_zedx01_seed00_200 # OK
+  # intime_home_006_zedx01_seed00_200 # OK
+  # intime_home_007_zedx01_seed00_200 # OK
+  # intime_home_008_zedx01_seed00_200 # OK
+  # intime_home_009_zedx01_seed00_200 # OK
+  # intime_home_010_zedx01_seed00_200 # OK
 
   # Taobao场景
   # taobao_AI_vol33_scene_04_zedx01_seed00_200
-  # taobao_AIUE_V01_002_zedx01_seed00_200
+  # taobao_AIUE_V01_002_zedx01_seed00_200 # OK
   # taobao_AIUE_V01_004_zedx01_seed00_200
   # taobao_AIUE_V01_005_zedx01_seed00_200
   # taobao_AIUE_V03_001_zedx01_seed00_200
