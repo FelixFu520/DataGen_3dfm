@@ -49,7 +49,7 @@ TASKS=(
   # taobao02_AI_vol3_scene_03_zedx01_seed00_200     # OK
   # taobao02_AI_vol3_scene_04_zedx01_seed00_200     #
   # taobao02_AI_vol4_01_zedx01_seed00_200           # OK
-  # taobao02_AI_vol4_02_zedx01_seed00_200           # 
+  # taobao02_AI_vol4_02_zedx01_seed00_200           # CHECK
   # taobao02_AI_vol4_03_zedx01_seed00_200           # OK
   # taobao02_AI_vol4_04_zedx01_seed00_200           # OK
   # taobao02_AI_vol4_05_zedx01_seed00_200           # OK
