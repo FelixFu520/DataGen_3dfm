@@ -49,7 +49,7 @@ TASKS=(
   # taobao02_AI_vol3_scene_03_zedx01_seed00_200     # OK
   # taobao02_AI_vol3_scene_04_zedx01_seed00_200     # OK
   # taobao02_AI_vol4_01_zedx01_seed00_200           # OK
-  # taobao02_AI_vol4_02_zedx01_seed00_200           # CHECK
+  # taobao02_AI_vol4_02_zedx01_seed00_200           # OK
   # taobao02_AI_vol4_03_zedx01_seed00_200           # OK
   # taobao02_AI_vol4_04_zedx01_seed00_200           # OK
   # taobao02_AI_vol4_05_zedx01_seed00_200           # OK
@@ -57,8 +57,8 @@ TASKS=(
   # taobao02_AIUE_V01_003_zedx01_seed00_200         # OK
   # taobao02_AIUE_V02_001_zedx01_seed00_200         # OK
   # taobao02_AIUE_V02_002_zedx01_seed00_200         # OK
-  # taobao02_AIUE_V02_003_zedx01_seed00_200         # CHECK
-  # taobao02_B110_House_Furniture_zedx01_seed00_200 # CHECK
+  # taobao02_AIUE_V02_003_zedx01_seed00_200         # OK
+  # taobao02_B110_House_Furniture_zedx01_seed00_200 # OK
 
 )
 
