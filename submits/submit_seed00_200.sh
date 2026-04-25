@@ -35,19 +35,19 @@ TASKS=(
   # taobao_QAModularParking_zedx01_seed00_200     # OK
   # taobao_QAOffice_zedx01_seed00_200             # OK
   # taobao_QAPolice_zedx01_seed00_200             # OK
-  # taobao_ResearchCenter_zedx01_seed00_200       # 
+  # taobao_ResearchCenter_zedx01_seed00_200       # OK
   # taobao_RetroOffice_zedx01_seed00_200          # OK
   # taobao_SchoolGym_zedx01_seed00_200            # OK
   # taobao_ShootingRange_zedx01_seed00_200        # OK
   # taobao_ShowRoom_zedx01_seed00_200             # OK
   # taobao_StylizedRoom_zedx01_seed00_200         # OK
-  # taobao_UtopianCity_zedx01_seed00_200          # 
+  # taobao_UtopianCity_zedx01_seed00_200          # OK
   # taobao_VictorianLivingRoom_zedx01_seed00_200  # OK
 
   # TaoBao02场景
   # taobao02_AI_vol3_scene_01_zedx01_seed00_200     # OK
   # taobao02_AI_vol3_scene_03_zedx01_seed00_200     # OK
-  # taobao02_AI_vol3_scene_04_zedx01_seed00_200     # CHECK
+  # taobao02_AI_vol3_scene_04_zedx01_seed00_200     # OK
   # taobao02_AI_vol4_01_zedx01_seed00_200           # OK
   # taobao02_AI_vol4_02_zedx01_seed00_200           # CHECK
   # taobao02_AI_vol4_03_zedx01_seed00_200           # OK
