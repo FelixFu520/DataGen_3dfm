@@ -1,7 +1,7 @@
 SCENE_USD_URL=/root/vepfs/isaacsim/DataGen_3dfm/asset_extern/TaoBao/UtopianCity/UtopianCityDemoMap.usd
 CAMERA_USD_URL=/root/vepfs/isaacsim/DataGen_3dfm/assets/zedx01.usd
 OUTPUT_DIR=/root/vepfs/isaacsim/workdir/3dfm_zedx01_seed01_100/taobao_UtopianCity_zedx01_seed01_100
-OCCUPANCY_RESOLUTION=0.5
+OCCUPANCY_RESOLUTION=0.75
 NUM_POINTS=10
 NUM_PATHS=10
 MAX_ANGLE_DEVIATION=10.0

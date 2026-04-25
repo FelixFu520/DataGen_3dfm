@@ -207,8 +207,8 @@ if __name__ == "__main__":
                 valid_image_count = 0
                 for camera_rgb in cameras_rgb:
                     # 排除整体偏暗的图片、排除色差小的图片
-                    black_pixel_threshold = 10  # 整体偏暗的阈值
-                    color_difference_threshold = 10  # 色差小的阈值
+                    black_pixel_threshold = 5  # 整体偏暗的阈值
+                    color_difference_threshold = 5  # 色差小的阈值
                     black_pixel_ratio = 0.5  # 整体偏暗的像素比例
                     black_pixel_count = np.sum(camera_rgb < black_pixel_threshold)
                     max_value = np.max(camera_rgb)  # 最大值
