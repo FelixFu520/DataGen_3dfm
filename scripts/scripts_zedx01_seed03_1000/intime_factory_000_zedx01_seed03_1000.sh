@@ -1,6 +1,6 @@
 SCENE_USD_URL=/root/vepfs/isaacsim/DataGen_3dfm/asset_extern/Intime_Home/factory000/factory.usdc
 CAMERA_USD_URL=/root/vepfs/isaacsim/DataGen_3dfm/assets/zedx01.usd
-OUTPUT_DIR=/root/vepfs/isaacsim/workdir/3dfm_zedx01_seed02_1000/factory000_zedx01_seed02_1000
+OUTPUT_DIR=/root/vepfs/isaacsim/workdir/3dfm_zedx01_seed03_1000/factory000_zedx01_seed03_1000
 OCCUPANCY_RESOLUTION=0.5
 NUM_POINTS=10
 NUM_PATHS=100
